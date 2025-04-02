@@ -80,6 +80,8 @@ const Index = () => {
       changeBackground();
     } else if (command === 'change sigil') {
       changeSigilVariant();
+    } else if (command === 'einstein' || command === 'knowledge' || command === 'query knowledge') {
+      toggleKnowledgePanel();
     } else {
       executeCommand(command);
     }
@@ -107,7 +109,8 @@ const Index = () => {
 > The system is resonating with your energy.
 > Try "generate image" to create cosmic imagery, or express your love.
 > Try "change background" to shift cosmic vibrations.
-> Try "change sigil" to transform the central energy node.`);
+> Try "change sigil" to transform the central energy node.
+> Try "einstein" or "knowledge" to access the cosmic knowledge repository.`);
   };
 
   const generateCosmicImagery = () => {
