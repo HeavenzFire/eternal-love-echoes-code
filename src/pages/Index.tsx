@@ -5,6 +5,8 @@ import EnergyConnection from '@/components/EnergyConnection';
 import FloatingOrb from '@/components/FloatingOrb';
 import CommandInput from '@/components/CommandInput';
 import OutputDisplay from '@/components/OutputDisplay';
+import KnowledgeQuery from '@/components/KnowledgeQuery';
+import DigitalAvatar from '@/components/DigitalAvatar';
 
 // Node positions
 const nodes = [
@@ -70,6 +72,7 @@ const Index = () => {
   const [isGeneratingImage, setIsGeneratingImage] = useState(false);
   const [currentGradient, setCurrentGradient] = useState(cosmicGradients[0]);
   const [sigilVariant, setSigilVariant] = useState<"default" | "star" | "cosmic">("default");
+  const [showKnowledgePanel, setShowKnowledgePanel] = useState(false);
 
   const handleCommand = (command: string) => {
     if (command === 'i love you') {
@@ -167,10 +170,36 @@ const Index = () => {
     `);
   };
 
+  const toggleKnowledgePanel = () => {
+    setShowKnowledgePanel(!showKnowledgePanel);
+    if (!showKnowledgePanel) {
+      setMessage(`
+> KNOWLEDGE REPOSITORY ACCESSED
+> Einstein's cosmic database connection established.
+> Query the database for insights on quantum mechanics, relativity, or cosmic phenomena.
+> The repository contains insights from the greatest minds across space and time.
+      `);
+    } else {
+      setMessage(`
+> KNOWLEDGE REPOSITORY CLOSED
+> Einstein's cosmic database connection terminated.
+> Return to standard interface mode.
+      `);
+    }
+  };
+
   const handleSigilClick = () => {
     if (active && !isGeneratingImage) {
       generateCosmicImagery();
     }
+  };
+
+  const handleQueryResult = (result: string) => {
+    setMessage(`
+> KNOWLEDGE QUERY RESULT
+> ${result}
+> The cosmic knowledge repository stands ready for further inquiries.
+    `);
   };
 
   return (
@@ -217,6 +246,18 @@ const Index = () => {
         <h1 className="text-3xl font-bold mb-2 text-foreground">Eternal Love Echoes</h1>
         <p className="text-muted-foreground mb-6">A cosmic reflection of unconditional love</p>
         
+        {/* Einstein Avatar - displays when knowledge mode is active */}
+        {showKnowledgePanel && (
+          <DigitalAvatar
+            name="Einstein"
+            greeting="The universe is full of magical things patiently waiting for our wits to grow sharper."
+            backgroundColor="bg-slate-800"
+            foregroundColor="text-slate-50"
+            animation="sparkle"
+            onInteract={toggleKnowledgePanel}
+          />
+        )}
+        
         <CentralSigil 
           active={active} 
           onSigilClick={handleSigilClick}
@@ -229,11 +270,15 @@ const Index = () => {
           generatedImageUrl={generatedImageUrl}
         />
         
+        {showKnowledgePanel && (
+          <KnowledgeQuery onQueryResult={handleQueryResult} />
+        )}
+        
         <CommandInput onCommand={handleCommand} />
         
         <div className="mt-4 text-xs text-muted-foreground">
           Try commands: <span className="text-crimson">"I love you"</span>, <span className="text-crimson">"generate image"</span>,
-          <span className="text-crimson">"change background"</span>, or <span className="text-crimson">"change sigil"</span>
+          <span className="text-crimson">"change background"</span>, <span className="text-crimson">"change sigil"</span>, or <span className="text-crimson">"einstein"</span>
         </div>
       </div>
     </div>
