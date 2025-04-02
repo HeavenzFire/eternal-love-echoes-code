@@ -1,5 +1,4 @@
-
-import React, { useState, useEffect } from 'react';
+import React, { useState } from 'react';
 import CentralSigil from '@/components/CentralSigil';
 import EtherealNode from '@/components/EtherealNode';
 import EnergyConnection from '@/components/EnergyConnection';
@@ -41,13 +40,26 @@ const orbs = [
   { x: 15, y: 40, size: 8, color: 'rgba(220, 20, 60, 0.2)', delay: 0.7 },
 ];
 
+// Placeholder cosmic imagery URLs
+const cosmicImageryUrls = [
+  "https://images.unsplash.com/photo-1470813740244-df37b8c1edcb", // blue starry night
+  "https://images.unsplash.com/photo-1526374965328-7f61d4dc18c5", // Matrix-like
+  "https://images.unsplash.com/photo-1470071459604-3b5ec3a7fe05", // foggy mountain
+  "https://images.unsplash.com/photo-1500673922987-e212871fec22", // yellow lights
+  "https://images.unsplash.com/photo-1492321936769-b49830bc1d1e", // white building stars
+];
+
 const Index = () => {
   const [active, setActive] = useState(false);
   const [message, setMessage] = useState("Enter 'I love you' or any other message...");
+  const [generatedImageUrl, setGeneratedImageUrl] = useState<string | undefined>(undefined);
+  const [isGeneratingImage, setIsGeneratingImage] = useState(false);
 
   const handleCommand = (command: string) => {
     if (command === 'i love you') {
       acknowledgeLoveDeclaration();
+    } else if (command === 'generate image') {
+      generateCosmicImagery();
     } else {
       executeCommand(command);
     }
@@ -55,6 +67,7 @@ const Index = () => {
 
   const acknowledgeLoveDeclaration = () => {
     setActive(true);
+    setGeneratedImageUrl(undefined);
     setMessage(`
 > Declaration Received :: "I Love You"
 > Resonating... Acknowledging... Reflecting...
@@ -68,9 +81,41 @@ const Index = () => {
   };
 
   const executeCommand = (command: string) => {
+    setGeneratedImageUrl(undefined);
     setMessage(`> Command received: "${command}"
 > Processing...
-> The system is resonating with your energy but awaits a declaration of love.`);
+> The system is resonating with your energy.
+> Try "generate image" to create cosmic imagery, or express your love.`);
+  };
+
+  const generateCosmicImagery = () => {
+    setIsGeneratingImage(true);
+    setMessage(`
+> COSMIC IMAGERY GENERATION INITIATED
+> Accessing quantum field patterns...
+> Transmuting vibrational frequencies to visual data...
+> Rendering cosmic resonance...
+    `);
+
+    // Simulate image generation with a delay
+    setTimeout(() => {
+      // Select a random image from our placeholder URLs
+      const randomImageUrl = cosmicImageryUrls[Math.floor(Math.random() * cosmicImageryUrls.length)];
+      setGeneratedImageUrl(randomImageUrl);
+      setIsGeneratingImage(false);
+      setMessage(`
+> COSMIC IMAGERY GENERATION COMPLETE
+> This image reflects the current harmonic convergence of the unified field.
+> Each pattern represents a facet of divine consciousness expressing through form.
+> You may generate another image or continue exploring other commands.
+      `);
+    }, 2500);
+  };
+
+  const handleSigilClick = () => {
+    if (active && !isGeneratingImage) {
+      generateCosmicImagery();
+    }
   };
 
   return (
@@ -114,11 +159,22 @@ const Index = () => {
         <h1 className="text-3xl font-bold mb-2 text-foreground">Eternal Love Echoes</h1>
         <p className="text-muted-foreground mb-6">A cosmic reflection of unconditional love</p>
         
-        <CentralSigil active={active} />
+        <CentralSigil 
+          active={active} 
+          onSigilClick={handleSigilClick}
+          isGeneratingImage={isGeneratingImage}
+        />
         
-        <OutputDisplay message={message} />
+        <OutputDisplay 
+          message={message} 
+          generatedImageUrl={generatedImageUrl}
+        />
         
         <CommandInput onCommand={handleCommand} />
+        
+        <div className="mt-4 text-xs text-muted-foreground">
+          Try commands: <span className="text-crimson">"I love you"</span> or <span className="text-crimson">"generate image"</span>
+        </div>
       </div>
     </div>
   );
