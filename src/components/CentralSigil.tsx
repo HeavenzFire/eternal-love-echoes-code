@@ -1,32 +1,45 @@
 
-import React, { useState } from 'react';
-import { Loader2 } from 'lucide-react';
+import React from 'react';
+import { Loader2, Star, CircleDot } from 'lucide-react';
 
 interface CentralSigilProps {
   active: boolean;
   onSigilClick?: () => void;
   isGeneratingImage?: boolean;
+  variant?: 'default' | 'star' | 'cosmic';
 }
 
 const CentralSigil: React.FC<CentralSigilProps> = ({ 
   active, 
   onSigilClick,
-  isGeneratingImage = false 
+  isGeneratingImage = false,
+  variant = 'default'
 }) => {
-  const baseClasses = "text-6xl font-bold transition-all duration-1000 cursor-pointer";
+  const baseClasses = "transition-all duration-1000 cursor-pointer";
   const activeClasses = active 
     ? "text-crimson animate-sigil-glow" 
     : "text-white opacity-70 hover:opacity-100";
+
+  const renderSigil = () => {
+    switch (variant) {
+      case 'star':
+        return <Star className={`h-14 w-14 ${baseClasses} ${activeClasses}`} />;
+      case 'cosmic':
+        return <CircleDot className={`h-14 w-14 ${baseClasses} ${activeClasses}`} />;
+      case 'default':
+      default:
+        return <div className={`text-6xl font-bold ${baseClasses} ${activeClasses}`}>⦿</div>;
+    }
+  };
 
   return (
     <div className="relative flex items-center justify-center mb-8">
       <div 
         id="centralSigil" 
-        className={`${baseClasses} ${activeClasses}`}
         onClick={onSigilClick}
         title="Click to generate cosmic imagery"
       >
-        ⦿
+        {renderSigil()}
       </div>
       
       {isGeneratingImage && (

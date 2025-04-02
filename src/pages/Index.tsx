@@ -40,13 +40,27 @@ const orbs = [
   { x: 15, y: 40, size: 8, color: 'rgba(220, 20, 60, 0.2)', delay: 0.7 },
 ];
 
-// Placeholder cosmic imagery URLs
+// Enhanced cosmic imagery URLs
 const cosmicImageryUrls = [
   "https://images.unsplash.com/photo-1470813740244-df37b8c1edcb", // blue starry night
   "https://images.unsplash.com/photo-1526374965328-7f61d4dc18c5", // Matrix-like
   "https://images.unsplash.com/photo-1470071459604-3b5ec3a7fe05", // foggy mountain
   "https://images.unsplash.com/photo-1500673922987-e212871fec22", // yellow lights
   "https://images.unsplash.com/photo-1492321936769-b49830bc1d1e", // white building stars
+  "https://images.unsplash.com/photo-1462331940025-496dfbfc7564", // nebula and stars
+  "https://images.unsplash.com/photo-1539593395743-7da5ee10ff07", // aurora borealis
+  "https://images.unsplash.com/photo-1419242902214-272b3f66ee7a", // galaxy view
+  "https://images.unsplash.com/photo-1444703686981-a3abbc4d4fe3", // purple nebula
+  "https://images.unsplash.com/photo-1534447677768-be436bb09401", // celestial clouds
+];
+
+// Cosmic gradients
+const cosmicGradients = [
+  "linear-gradient(135deg, #0f0f1a 0%, #1a1a2e 100%)", // default
+  "linear-gradient(135deg, #090920 0%, #2c1654 100%)", // deep cosmic
+  "linear-gradient(135deg, #1c0522 0%, #2d1b4e 100%)", // nebula dream
+  "linear-gradient(135deg, #001b2e 0%, #294861 100%)", // celestial blue
+  "linear-gradient(135deg, #1a001a 0%, #400040 100%)", // cosmic purple
 ];
 
 const Index = () => {
@@ -54,12 +68,18 @@ const Index = () => {
   const [message, setMessage] = useState("Enter 'I love you' or any other message...");
   const [generatedImageUrl, setGeneratedImageUrl] = useState<string | undefined>(undefined);
   const [isGeneratingImage, setIsGeneratingImage] = useState(false);
+  const [currentGradient, setCurrentGradient] = useState(cosmicGradients[0]);
+  const [sigilVariant, setSigilVariant] = useState<"default" | "star" | "cosmic">("default");
 
   const handleCommand = (command: string) => {
     if (command === 'i love you') {
       acknowledgeLoveDeclaration();
     } else if (command === 'generate image') {
       generateCosmicImagery();
+    } else if (command.startsWith('change background')) {
+      changeBackground();
+    } else if (command === 'change sigil') {
+      changeSigilVariant();
     } else {
       executeCommand(command);
     }
@@ -85,7 +105,9 @@ const Index = () => {
     setMessage(`> Command received: "${command}"
 > Processing...
 > The system is resonating with your energy.
-> Try "generate image" to create cosmic imagery, or express your love.`);
+> Try "generate image" to create cosmic imagery, or express your love.
+> Try "change background" to shift cosmic vibrations.
+> Try "change sigil" to transform the central energy node.`);
   };
 
   const generateCosmicImagery = () => {
@@ -99,7 +121,7 @@ const Index = () => {
 
     // Simulate image generation with a delay
     setTimeout(() => {
-      // Select a random image from our placeholder URLs
+      // Select a random image from our expanded placeholder URLs
       const randomImageUrl = cosmicImageryUrls[Math.floor(Math.random() * cosmicImageryUrls.length)];
       setGeneratedImageUrl(randomImageUrl);
       setIsGeneratingImage(false);
@@ -112,6 +134,36 @@ const Index = () => {
     }, 2500);
   };
 
+  const changeBackground = () => {
+    // Select a random gradient that's different from the current one
+    let newGradientIndex;
+    do {
+      newGradientIndex = Math.floor(Math.random() * cosmicGradients.length);
+    } while (cosmicGradients[newGradientIndex] === currentGradient);
+    
+    setCurrentGradient(cosmicGradients[newGradientIndex]);
+    setMessage(`
+> COSMIC VIBRATION SHIFT INITIATED
+> Realigning dimensional frequency patterns...
+> New cosmic resonance established.
+> Background energy field has been harmonized to a new vibrational state.
+    `);
+  };
+
+  const changeSigilVariant = () => {
+    // Rotate through sigil variants
+    const variants: Array<"default" | "star" | "cosmic"> = ["default", "star", "cosmic"];
+    const currentIndex = variants.indexOf(sigilVariant);
+    const nextIndex = (currentIndex + 1) % variants.length;
+    setSigilVariant(variants[nextIndex]);
+    setMessage(`
+> CENTRAL SIGIL TRANSFORMATION INITIATED
+> Reconfiguring energy node patterns...
+> Core sigil has shifted to the ${variants[nextIndex]} configuration.
+> New dimensional gateway activated.
+    `);
+  };
+
   const handleSigilClick = () => {
     if (active && !isGeneratingImage) {
       generateCosmicImagery();
@@ -119,7 +171,10 @@ const Index = () => {
   };
 
   return (
-    <div className="min-h-screen cosmic-gradient flex flex-col items-center justify-center overflow-hidden relative">
+    <div 
+      className="min-h-screen flex flex-col items-center justify-center overflow-hidden relative"
+      style={{ background: currentGradient }}
+    >
       {/* Background nodes */}
       <div className="absolute inset-0 overflow-hidden">
         {nodes.map((node, i) => (
@@ -163,6 +218,7 @@ const Index = () => {
           active={active} 
           onSigilClick={handleSigilClick}
           isGeneratingImage={isGeneratingImage}
+          variant={sigilVariant}
         />
         
         <OutputDisplay 
@@ -173,7 +229,8 @@ const Index = () => {
         <CommandInput onCommand={handleCommand} />
         
         <div className="mt-4 text-xs text-muted-foreground">
-          Try commands: <span className="text-crimson">"I love you"</span> or <span className="text-crimson">"generate image"</span>
+          Try commands: <span className="text-crimson">"I love you"</span>, <span className="text-crimson">"generate image"</span>,
+          <span className="text-crimson">"change background"</span>, or <span className="text-crimson">"change sigil"</span>
         </div>
       </div>
     </div>

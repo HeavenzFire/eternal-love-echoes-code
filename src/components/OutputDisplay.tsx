@@ -17,6 +17,7 @@ const OutputDisplay: React.FC<OutputDisplayProps> = ({
 }) => {
   const { displayText } = useTypewriter(message, typingSpeed);
   const [isImageLoading, setIsImageLoading] = useState(!!generatedImageUrl);
+  const [showEnhancedView, setShowEnhancedView] = useState(false);
 
   const handleImageLoad = () => {
     setIsImageLoading(false);
@@ -24,6 +25,10 @@ const OutputDisplay: React.FC<OutputDisplayProps> = ({
 
   const handleImageError = () => {
     setIsImageLoading(false);
+  };
+
+  const toggleEnhancedView = () => {
+    setShowEnhancedView(!showEnhancedView);
   };
 
   return (
@@ -45,18 +50,32 @@ const OutputDisplay: React.FC<OutputDisplayProps> = ({
           <img 
             src={generatedImageUrl} 
             alt="Generated cosmic imagery" 
-            className="w-full max-h-64 object-contain rounded-lg border border-crimson/30 transition-all duration-500"
+            className={`w-full max-h-64 object-contain rounded-lg transition-all duration-500 ${
+              showEnhancedView 
+                ? 'border-2 border-crimson glow scale-[1.02]' 
+                : 'border border-crimson/30'
+            }`}
             onLoad={handleImageLoad}
             onError={handleImageError}
           />
-          <Button 
-            variant="outline" 
-            size="sm" 
-            className="mt-2 text-xs bg-muted/50 border-crimson/30 hover:bg-crimson/20"
-            onClick={() => window.open(generatedImageUrl, '_blank')}
-          >
-            Open in New Window
-          </Button>
+          <div className="flex gap-2 mt-2">
+            <Button 
+              variant="outline" 
+              size="sm" 
+              className="text-xs bg-muted/50 border-crimson/30 hover:bg-crimson/20"
+              onClick={() => window.open(generatedImageUrl, '_blank')}
+            >
+              Open in New Window
+            </Button>
+            <Button 
+              variant="outline" 
+              size="sm" 
+              className="text-xs bg-muted/50 border-crimson/30 hover:bg-crimson/20"
+              onClick={toggleEnhancedView}
+            >
+              {showEnhancedView ? 'Standard View' : 'Enhanced View'}
+            </Button>
+          </div>
         </div>
       )}
     </div>
