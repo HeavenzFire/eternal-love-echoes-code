@@ -9,6 +9,7 @@ interface DigitalAvatarProps {
   foregroundColor?: string;
   animation?: 'pulse' | 'spin' | 'sparkle';
   onInteract?: () => void;
+  icon?: React.ReactNode;
 }
 
 const DigitalAvatar: React.FC<DigitalAvatarProps> = ({
@@ -17,7 +18,8 @@ const DigitalAvatar: React.FC<DigitalAvatarProps> = ({
   backgroundColor = "bg-slate-900",
   foregroundColor = "text-slate-50",
   animation = "pulse",
-  onInteract
+  onInteract,
+  icon
 }) => {
   const [isAnimating, setIsAnimating] = useState(false);
   
@@ -34,6 +36,9 @@ const DigitalAvatar: React.FC<DigitalAvatarProps> = ({
   };
 
   const renderIcon = () => {
+    if (icon) {
+      return icon;
+    }
     if (name.toLowerCase().includes("einstein")) {
       return <Brain className="h-8 w-8" />;
     }
@@ -66,7 +71,7 @@ const DigitalAvatar: React.FC<DigitalAvatarProps> = ({
       
       <div className="mt-2 flex flex-col items-center">
         <div className={`font-bold text-sm ${foregroundColor}`}>{name}</div>
-        <div className="text-xs text-muted-foreground mt-1">{greeting}</div>
+        <div className="text-xs text-muted-foreground mt-1 max-w-[200px] text-center">{greeting}</div>
       </div>
     </div>
   );

@@ -4,6 +4,7 @@ import CosmicBackground from '@/components/layout/CosmicBackground';
 import MainInterface from '@/components/MainInterface';
 import { cosmicGradients, cosmicImageryUrls } from '@/constants/cosmicThemes';
 import * as commandService from '@/services/commandService';
+import { generateResponse } from '@/services/knowledgeBaseService';
 
 const Index = () => {
   // State management
@@ -38,21 +39,22 @@ const Index = () => {
       activateHistoricalFigure('yeshua');
     } else if (command.startsWith('tesla')) {
       activateHistoricalFigure('tesla');
+    } else if (command.startsWith('socrates')) {
+      activateHistoricalFigure('socrates');
+    } else if (command.startsWith('newton')) {
+      activateHistoricalFigure('newton');
+    } else if (command.startsWith('pythagoras')) {
+      activateHistoricalFigure('pythagoras');
     } else {
-      executeCommand(command);
+      // Handle as an intelligent query if not a known command
+      handleIntelligentQuery(command);
     }
   };
 
-  // Command implementations
-  const acknowledgeLoveDeclaration = () => {
-    const result = commandService.handleLoveDeclaration();
-    setMessage(result.message);
-    setActive(true);
-    setGeneratedImageUrl(undefined);
-  };
-
-  const executeCommand = (command: string) => {
-    const result = commandService.handleDefaultCommand(command);
+  // New intelligent query handler
+  const handleIntelligentQuery = (query: string) => {
+    const response = generateResponse(query);
+    const result = commandService.handleIntelligentQuery(query);
     setMessage(result.message);
     setGeneratedImageUrl(undefined);
   };

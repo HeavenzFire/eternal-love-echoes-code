@@ -1,5 +1,5 @@
-
 import { HistoricalFigure, getFigureById } from "@/data/historicalFigures";
+import { generateResponse } from "@/services/knowledgeBaseService";
 
 type CommandHandlerOutput = {
   message: string;
@@ -83,10 +83,10 @@ export const handleToggleKnowledge = (
 ): CommandHandlerOutput => ({
   message: show
     ? `
-> KNOWLEDGE REPOSITORY ACCESSED
+> ADVANCED KNOWLEDGE REPOSITORY ACCESSED
 > Einstein's cosmic database connection established.
-> Query the database for insights on quantum mechanics, relativity, or cosmic phenomena.
-> The repository contains insights from the greatest minds across space and time.
+> This repository contains comprehensive knowledge across physics, philosophy, mathematics, spirituality, and more.
+> Query any subject to receive detailed insights drawn from the wisdom of the greatest minds across time.
     `
     : `
 > KNOWLEDGE REPOSITORY CLOSED
@@ -211,3 +211,20 @@ export const handleVisioNETResult = (
 > The historical wisdom network remains active for further exploration.
   `,
 });
+
+export const handleIntelligentQuery = (
+  query: string
+): CommandHandlerOutput => {
+  const response = generateResponse(query);
+  
+  return {
+    message: `
+> INTELLIGENT QUERY PROCESSED
+> Query: "${query}"
+> 
+> ${response}
+> 
+> The intelligence system remains active for further exploration.
+    `,
+  };
+};
