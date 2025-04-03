@@ -1,12 +1,16 @@
-
 import { HistoricalFigure, getFigureById } from "@/data/historicalFigures";
 import { generateResponse, findSimilarTerms, getEquations } from "@/services/knowledgeBaseService";
+import { useToast } from "@/hooks/use-toast";
 
 type CommandHandlerOutput = {
   message: string;
   showKnowledgePanel?: boolean;
   showCodeEditor?: boolean;
   showVisioNET?: boolean;
+  showTextEditor?: boolean;
+  showMindMap?: boolean;
+  showPDFTools?: boolean;
+  showBodyImageGenerator?: boolean;
   selectedAvatar?: string;
   generatedImageUrl?: string;
   isGeneratingImage?: boolean;
@@ -143,6 +147,110 @@ export const handleToggleVisioNET = (
   showCodeEditor: false,
 });
 
+export const handleToggleTextEditor = (
+  show: boolean
+): CommandHandlerOutput => ({
+  message: show
+    ? `
+> TEXT EDITOR ACTIVATED
+> Advanced text manipulation system now online.
+> Create, edit, and format text documents.
+> Apply various styling and export options.
+> Use markdown or rich text formatting.
+    `
+    : `
+> TEXT EDITOR DEACTIVATED
+> Text manipulation systems have been placed in standby mode.
+> Return to standard interface mode.
+    `,
+  showTextEditor: show,
+  showKnowledgePanel: false,
+  showCodeEditor: false,
+  showVisioNET: false,
+  showMindMap: false,
+  showPDFTools: false,
+  showBodyImageGenerator: false,
+  selectedAvatar: "shakespeare",
+});
+
+export const handleToggleMindMap = (
+  show: boolean
+): CommandHandlerOutput => ({
+  message: show
+    ? `
+> MIND MAP SYSTEM ACTIVATED
+> Neural network visualization tools online.
+> Create, connect, and organize thoughts visually.
+> Map concepts, hierarchies, and relationships.
+> Export your mind maps in various formats.
+    `
+    : `
+> MIND MAP SYSTEM DEACTIVATED
+> Visual thinking tools have been placed in standby mode.
+> Return to standard interface mode.
+    `,
+  showMindMap: show,
+  showKnowledgePanel: false,
+  showCodeEditor: false,
+  showVisioNET: false,
+  showTextEditor: false,
+  showPDFTools: false,
+  showBodyImageGenerator: false,
+  selectedAvatar: "davinci",
+});
+
+export const handleTogglePDFTools = (
+  show: boolean
+): CommandHandlerOutput => ({
+  message: show
+    ? `
+> PDF TOOLS ACTIVATED
+> Document processing systems initialized.
+> Create, edit, annotate, and convert PDF documents.
+> Extract text and images from existing PDFs.
+> Apply optical character recognition to scanned documents.
+    `
+    : `
+> PDF TOOLS DEACTIVATED
+> Document processing systems have been placed in standby mode.
+> Return to standard interface mode.
+    `,
+  showPDFTools: show,
+  showKnowledgePanel: false,
+  showCodeEditor: false,
+  showVisioNET: false,
+  showTextEditor: false,
+  showMindMap: false,
+  showBodyImageGenerator: false,
+  selectedAvatar: "franklin",
+});
+
+export const handleToggleBodyImageGenerator = (
+  show: boolean
+): CommandHandlerOutput => ({
+  message: show
+    ? `
+> HUMAN BODY IMAGE GENERATOR ACTIVATED
+> Anatomical visualization system online.
+> Generate detailed human anatomical visualizations.
+> Customize body type, pose, and anatomical features.
+> Use for educational, medical, or creative purposes.
+    `
+    : `
+> HUMAN BODY IMAGE GENERATOR DEACTIVATED
+> Anatomical visualization system placed in standby mode.
+> Return to standard interface mode.
+    `,
+  showBodyImageGenerator: show,
+  showKnowledgePanel: false,
+  showCodeEditor: false,
+  showVisioNET: false,
+  showTextEditor: false,
+  showMindMap: false,
+  showPDFTools: false,
+  selectedAvatar: "davinci",
+});
+
 export const handleActivateHistoricalFigure = (
   id: string
 ): CommandHandlerOutput => {
@@ -224,6 +332,10 @@ export const handleDefaultCommand = (
 > Try "visionaries" or "yeshua" to explore great minds of history.
 > Try "dictionary: [term]" to look up definitions and related terms.
 > Try "math: [topic]" to explore mathematical concepts and equations.
+> Try "text editor" to create and edit text documents.
+> Try "mind map" to visualize and organize thoughts.
+> Try "pdf tools" to work with PDF documents.
+> Try "body generator" to create anatomical visualizations.
   `,
 });
 
@@ -286,3 +398,49 @@ export const handleIntelligentQuery = (
     `,
   };
 };
+
+export const handleTextEditResult = (
+  result: string
+): CommandHandlerOutput => ({
+  message: `
+> TEXT EDIT COMPLETE
+> Your document has been processed successfully.
+> ${result}
+> The text editor remains active for further editing.
+  `,
+});
+
+export const handleMindMapResult = (
+  result: string
+): CommandHandlerOutput => ({
+  message: `
+> MIND MAP UPDATED
+> Your visual thought structure has been updated.
+> ${result}
+> The mind mapping system remains active for further connections.
+  `,
+});
+
+export const handlePDFResult = (
+  result: string
+): CommandHandlerOutput => ({
+  message: `
+> PDF OPERATION COMPLETE
+> Your document has been processed successfully.
+> ${result}
+> The PDF tools remain active for further document operations.
+  `,
+});
+
+export const handleBodyImageResult = (
+  imageUrl: string
+): CommandHandlerOutput => ({
+  message: `
+> ANATOMICAL VISUALIZATION COMPLETE
+> Human body image has been generated.
+> The image can be used for educational or reference purposes.
+> You may adjust parameters or generate new visualizations.
+  `,
+  generatedImageUrl: imageUrl,
+  isGeneratingImage: false,
+});

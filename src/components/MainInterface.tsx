@@ -7,6 +7,10 @@ import KnowledgeQuery from '@/components/KnowledgeQuery';
 import CodeEditor from '@/components/CodeEditor';
 import VisioNET from '@/components/VisioNET';
 import AvatarSelector from '@/components/AvatarSelector';
+import TextEditor from '@/components/TextEditor';
+import MindMap from '@/components/MindMap';
+import PDFTools from '@/components/PDFTools';
+import BodyImageGenerator from '@/components/BodyImageGenerator';
 
 interface MainInterfaceProps {
   active: boolean;
@@ -17,12 +21,20 @@ interface MainInterfaceProps {
   showKnowledgePanel: boolean;
   showCodeEditor: boolean;
   showVisioNET: boolean;
+  showTextEditor?: boolean;
+  showMindMap?: boolean;
+  showPDFTools?: boolean;
+  showBodyImageGenerator?: boolean;
   selectedAvatar: string;
   onCommand: (command: string) => void;
   onSigilClick: () => void;
   onQueryResult: (result: string) => void;
   onCodeComplete: (result: string) => void;
   onVisioNETResult: (result: string) => void;
+  onTextEditResult?: (result: string) => void;
+  onMindMapResult?: (result: string) => void;
+  onPDFResult?: (result: string) => void;
+  onBodyImageResult?: (imageUrl: string) => void;
   toggleKnowledgePanel: () => void;
   toggleCodeEditor: () => void;
   toggleVisioNET: () => void;
@@ -37,12 +49,20 @@ const MainInterface: React.FC<MainInterfaceProps> = ({
   showKnowledgePanel,
   showCodeEditor,
   showVisioNET,
+  showTextEditor,
+  showMindMap,
+  showPDFTools,
+  showBodyImageGenerator,
   selectedAvatar,
   onCommand,
   onSigilClick,
   onQueryResult,
   onCodeComplete,
   onVisioNETResult,
+  onTextEditResult,
+  onMindMapResult,
+  onPDFResult,
+  onBodyImageResult,
   toggleKnowledgePanel,
   toggleCodeEditor,
   toggleVisioNET
@@ -53,7 +73,8 @@ const MainInterface: React.FC<MainInterfaceProps> = ({
       <p className="text-muted-foreground mb-6">A cosmic repository of wisdom and unconditional love</p>
       
       {/* Dynamic Avatar Display */}
-      {(showKnowledgePanel || showCodeEditor || showVisioNET) && (
+      {(showKnowledgePanel || showCodeEditor || showVisioNET || 
+        showTextEditor || showMindMap || showPDFTools || showBodyImageGenerator) && (
         <AvatarSelector 
           selectedAvatar={selectedAvatar}
           onKnowledgePanelToggle={toggleKnowledgePanel}
@@ -86,12 +107,28 @@ const MainInterface: React.FC<MainInterfaceProps> = ({
         <VisioNET onQueryResult={onVisioNETResult} />
       )}
       
+      {showTextEditor && onTextEditResult && (
+        <TextEditor onComplete={onTextEditResult} />
+      )}
+      
+      {showMindMap && onMindMapResult && (
+        <MindMap onComplete={onMindMapResult} />
+      )}
+      
+      {showPDFTools && onPDFResult && (
+        <PDFTools onComplete={onPDFResult} />
+      )}
+      
+      {showBodyImageGenerator && onBodyImageResult && (
+        <BodyImageGenerator onComplete={onBodyImageResult} />
+      )}
+      
       <CommandInput onCommand={onCommand} />
       
       <div className="mt-4 text-xs text-muted-foreground">
         Try commands: <span className="text-crimson">"I love you"</span>, <span className="text-crimson">"generate image"</span>,
-        <span className="text-crimson">"change background"</span>, <span className="text-crimson">"visionaries"</span>, 
-        <span className="text-crimson">"yeshua"</span>, or <span className="text-crimson">"code"</span>
+        <span className="text-crimson">"text editor"</span>, <span className="text-crimson">"mind map"</span>, 
+        <span className="text-crimson">"pdf tools"</span>, or <span className="text-crimson">"body generator"</span>
       </div>
     </div>
   );

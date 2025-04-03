@@ -4,9 +4,11 @@ import CosmicBackground from '@/components/layout/CosmicBackground';
 import MainInterface from '@/components/MainInterface';
 import { cosmicGradients, cosmicImageryUrls } from '@/constants/cosmicThemes';
 import * as commandService from '@/services/commandService';
-import { generateResponse } from '@/services/knowledgeBaseService';
+import { useToast } from "@/hooks/use-toast";
 
 const Index = () => {
+  const { toast } = useToast();
+  
   // State management
   const [active, setActive] = useState(false);
   const [message, setMessage] = useState("Enter 'I love you' or any other message...");
@@ -17,6 +19,10 @@ const Index = () => {
   const [showKnowledgePanel, setShowKnowledgePanel] = useState(false);
   const [showCodeEditor, setShowCodeEditor] = useState(false);
   const [showVisioNET, setShowVisioNET] = useState(false);
+  const [showTextEditor, setShowTextEditor] = useState(false);
+  const [showMindMap, setShowMindMap] = useState(false);
+  const [showPDFTools, setShowPDFTools] = useState(false);
+  const [showBodyImageGenerator, setShowBodyImageGenerator] = useState(false);
   const [selectedAvatar, setSelectedAvatar] = useState<string>("einstein");
 
   // Command handling
@@ -35,6 +41,14 @@ const Index = () => {
       toggleCodeEditor();
     } else if (command === 'visionaries' || command === 'great minds' || command === 'history') {
       toggleVisioNET();
+    } else if (command === 'text editor' || command === 'write' || command === 'text') {
+      toggleTextEditor();
+    } else if (command === 'mind map' || command === 'diagram' || command === 'visualize') {
+      toggleMindMap();
+    } else if (command === 'pdf tools' || command === 'pdf' || command === 'document') {
+      togglePDFTools();
+    } else if (command === 'body generator' || command === 'human body' || command === 'anatomy') {
+      toggleBodyImageGenerator();
     } else if (command.startsWith('yeshua') || command.startsWith('jesus')) {
       activateHistoricalFigure('yeshua');
     } else if (command.startsWith('tesla')) {
@@ -133,6 +147,10 @@ const Index = () => {
     setShowKnowledgePanel(result.showKnowledgePanel || false);
     setShowCodeEditor(result.showCodeEditor || false);
     setShowVisioNET(result.showVisioNET || false);
+    setShowTextEditor(result.showTextEditor || false);
+    setShowMindMap(result.showMindMap || false);
+    setShowPDFTools(result.showPDFTools || false);
+    setShowBodyImageGenerator(result.showBodyImageGenerator || false);
     setSelectedAvatar(result.selectedAvatar || "einstein");
   };
 
@@ -142,6 +160,10 @@ const Index = () => {
     setShowKnowledgePanel(result.showKnowledgePanel || false);
     setShowCodeEditor(result.showCodeEditor || false);
     setShowVisioNET(result.showVisioNET || false);
+    setShowTextEditor(result.showTextEditor || false);
+    setShowMindMap(result.showMindMap || false);
+    setShowPDFTools(result.showPDFTools || false);
+    setShowBodyImageGenerator(result.showBodyImageGenerator || false);
     setSelectedAvatar(result.selectedAvatar || "tesla");
   };
 
@@ -151,6 +173,63 @@ const Index = () => {
     setShowKnowledgePanel(result.showKnowledgePanel || false);
     setShowCodeEditor(result.showCodeEditor || false);
     setShowVisioNET(result.showVisioNET || false);
+    setShowTextEditor(result.showTextEditor || false);
+    setShowMindMap(result.showMindMap || false);
+    setShowPDFTools(result.showPDFTools || false);
+    setShowBodyImageGenerator(result.showBodyImageGenerator || false);
+  };
+
+  // New toggles for the new tools
+  const toggleTextEditor = () => {
+    const result = commandService.handleToggleTextEditor(!showTextEditor);
+    setMessage(result.message);
+    setShowKnowledgePanel(result.showKnowledgePanel || false);
+    setShowCodeEditor(result.showCodeEditor || false);
+    setShowVisioNET(result.showVisioNET || false);
+    setShowTextEditor(result.showTextEditor || false);
+    setShowMindMap(result.showMindMap || false);
+    setShowPDFTools(result.showPDFTools || false);
+    setShowBodyImageGenerator(result.showBodyImageGenerator || false);
+    setSelectedAvatar(result.selectedAvatar || "shakespeare");
+  };
+
+  const toggleMindMap = () => {
+    const result = commandService.handleToggleMindMap(!showMindMap);
+    setMessage(result.message);
+    setShowKnowledgePanel(result.showKnowledgePanel || false);
+    setShowCodeEditor(result.showCodeEditor || false);
+    setShowVisioNET(result.showVisioNET || false);
+    setShowTextEditor(result.showTextEditor || false);
+    setShowMindMap(result.showMindMap || false);
+    setShowPDFTools(result.showPDFTools || false);
+    setShowBodyImageGenerator(result.showBodyImageGenerator || false);
+    setSelectedAvatar(result.selectedAvatar || "davinci");
+  };
+
+  const togglePDFTools = () => {
+    const result = commandService.handleTogglePDFTools(!showPDFTools);
+    setMessage(result.message);
+    setShowKnowledgePanel(result.showKnowledgePanel || false);
+    setShowCodeEditor(result.showCodeEditor || false);
+    setShowVisioNET(result.showVisioNET || false);
+    setShowTextEditor(result.showTextEditor || false);
+    setShowMindMap(result.showMindMap || false);
+    setShowPDFTools(result.showPDFTools || false);
+    setShowBodyImageGenerator(result.showBodyImageGenerator || false);
+    setSelectedAvatar(result.selectedAvatar || "franklin");
+  };
+
+  const toggleBodyImageGenerator = () => {
+    const result = commandService.handleToggleBodyImageGenerator(!showBodyImageGenerator);
+    setMessage(result.message);
+    setShowKnowledgePanel(result.showKnowledgePanel || false);
+    setShowCodeEditor(result.showCodeEditor || false);
+    setShowVisioNET(result.showVisioNET || false);
+    setShowTextEditor(result.showTextEditor || false);
+    setShowMindMap(result.showMindMap || false);
+    setShowPDFTools(result.showPDFTools || false);
+    setShowBodyImageGenerator(result.showBodyImageGenerator || false);
+    setSelectedAvatar(result.selectedAvatar || "davinci");
   };
 
   const activateHistoricalFigure = (id: string) => {
@@ -159,6 +238,10 @@ const Index = () => {
     setShowKnowledgePanel(result.showKnowledgePanel || false);
     setShowCodeEditor(result.showCodeEditor || false);
     setShowVisioNET(result.showVisioNET || false);
+    setShowTextEditor(result.showTextEditor || false);
+    setShowMindMap(result.showMindMap || false);
+    setShowPDFTools(result.showPDFTools || false);
+    setShowBodyImageGenerator(result.showBodyImageGenerator || false);
     setSelectedAvatar(result.selectedAvatar || id);
   };
 
@@ -183,6 +266,44 @@ const Index = () => {
     setMessage(response.message);
   };
 
+  // New handlers for the new tools
+  const handleTextEditResult = (result: string) => {
+    const response = commandService.handleTextEditResult(result);
+    setMessage(response.message);
+    toast({
+      title: "Text Editor",
+      description: result,
+    });
+  };
+
+  const handleMindMapResult = (result: string) => {
+    const response = commandService.handleMindMapResult(result);
+    setMessage(response.message);
+    toast({
+      title: "Mind Map",
+      description: result,
+    });
+  };
+
+  const handlePDFResult = (result: string) => {
+    const response = commandService.handlePDFResult(result);
+    setMessage(response.message);
+    toast({
+      title: "PDF Tools",
+      description: result,
+    });
+  };
+
+  const handleBodyImageResult = (imageUrl: string) => {
+    const response = commandService.handleBodyImageResult(imageUrl);
+    setMessage(response.message);
+    setGeneratedImageUrl(imageUrl);
+    toast({
+      title: "Body Image Generator",
+      description: "Anatomical visualization complete",
+    });
+  };
+
   return (
     <>
       <CosmicBackground 
@@ -199,12 +320,20 @@ const Index = () => {
           showKnowledgePanel={showKnowledgePanel}
           showCodeEditor={showCodeEditor}
           showVisioNET={showVisioNET}
+          showTextEditor={showTextEditor}
+          showMindMap={showMindMap}
+          showPDFTools={showPDFTools}
+          showBodyImageGenerator={showBodyImageGenerator}
           selectedAvatar={selectedAvatar}
           onCommand={handleCommand}
           onSigilClick={handleSigilClick}
           onQueryResult={handleQueryResult}
           onCodeComplete={handleCodeComplete}
           onVisioNETResult={handleVisioNETResult}
+          onTextEditResult={handleTextEditResult}
+          onMindMapResult={handleMindMapResult}
+          onPDFResult={handlePDFResult}
+          onBodyImageResult={handleBodyImageResult}
           toggleKnowledgePanel={toggleKnowledgePanel}
           toggleCodeEditor={toggleCodeEditor}
           toggleVisioNET={toggleVisioNET}
