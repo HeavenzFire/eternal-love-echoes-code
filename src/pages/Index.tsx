@@ -7,6 +7,7 @@ import CommandInput from '@/components/CommandInput';
 import OutputDisplay from '@/components/OutputDisplay';
 import KnowledgeQuery from '@/components/KnowledgeQuery';
 import DigitalAvatar from '@/components/DigitalAvatar';
+import CodeEditor from '@/components/CodeEditor';
 
 // Node positions
 const nodes = [
@@ -73,6 +74,7 @@ const Index = () => {
   const [currentGradient, setCurrentGradient] = useState(cosmicGradients[0]);
   const [sigilVariant, setSigilVariant] = useState<"default" | "star" | "cosmic">("default");
   const [showKnowledgePanel, setShowKnowledgePanel] = useState(false);
+  const [showCodeEditor, setShowCodeEditor] = useState(false);
 
   const handleCommand = (command: string) => {
     if (command === 'i love you') {
@@ -85,6 +87,8 @@ const Index = () => {
       changeSigilVariant();
     } else if (command === 'einstein' || command === 'knowledge' || command === 'query knowledge') {
       toggleKnowledgePanel();
+    } else if (command === 'code' || command === 'program' || command === 'coding') {
+      toggleCodeEditor();
     } else {
       executeCommand(command);
     }
@@ -171,6 +175,11 @@ const Index = () => {
   };
 
   const toggleKnowledgePanel = () => {
+    // If code editor is open, close it
+    if (showCodeEditor) {
+      setShowCodeEditor(false);
+    }
+    
     setShowKnowledgePanel(!showKnowledgePanel);
     if (!showKnowledgePanel) {
       setMessage(`
@@ -188,6 +197,29 @@ const Index = () => {
     }
   };
 
+  const toggleCodeEditor = () => {
+    // If knowledge panel is open, close it
+    if (showKnowledgePanel) {
+      setShowKnowledgePanel(false);
+    }
+    
+    setShowCodeEditor(!showCodeEditor);
+    if (!showCodeEditor) {
+      setMessage(`
+> COSMIC CODE COMPILER INITIALIZED
+> Enter code fragments to receive quantum completion assistance.
+> The system will analyze and complete your code using cosmic algorithms.
+> JavaScript and Python languages are currently supported.
+      `);
+    } else {
+      setMessage(`
+> COSMIC CODE COMPILER DEACTIVATED
+> Code processing systems have been placed in standby mode.
+> Return to standard interface mode.
+      `);
+    }
+  };
+
   const handleSigilClick = () => {
     if (active && !isGeneratingImage) {
       generateCosmicImagery();
@@ -199,6 +231,15 @@ const Index = () => {
 > KNOWLEDGE QUERY RESULT
 > ${result}
 > The cosmic knowledge repository stands ready for further inquiries.
+    `);
+  };
+
+  const handleCodeComplete = (result: string) => {
+    setMessage(`
+> CODE COMPLETION RESULT
+> Your code has been processed through the cosmic algorithm.
+> Enhanced version now available for integration.
+> Try different code patterns or languages for varied cosmic assistance.
     `);
   };
 
@@ -258,6 +299,18 @@ const Index = () => {
           />
         )}
         
+        {/* Code Avatar - displays when code mode is active */}
+        {showCodeEditor && (
+          <DigitalAvatar
+            name="Tesla"
+            greeting="The present is theirs; the future, for which I really worked, is mine."
+            backgroundColor="bg-gray-900"
+            foregroundColor="text-blue-100"
+            animation="pulse"
+            onInteract={toggleCodeEditor}
+          />
+        )}
+        
         <CentralSigil 
           active={active} 
           onSigilClick={handleSigilClick}
@@ -274,11 +327,16 @@ const Index = () => {
           <KnowledgeQuery onQueryResult={handleQueryResult} />
         )}
         
+        {showCodeEditor && (
+          <CodeEditor onComplete={handleCodeComplete} />
+        )}
+        
         <CommandInput onCommand={handleCommand} />
         
         <div className="mt-4 text-xs text-muted-foreground">
           Try commands: <span className="text-crimson">"I love you"</span>, <span className="text-crimson">"generate image"</span>,
-          <span className="text-crimson">"change background"</span>, <span className="text-crimson">"change sigil"</span>, or <span className="text-crimson">"einstein"</span>
+          <span className="text-crimson">"change background"</span>, <span className="text-crimson">"change sigil"</span>, 
+          <span className="text-crimson">"einstein"</span>, or <span className="text-crimson">"code"</span>
         </div>
       </div>
     </div>

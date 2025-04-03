@@ -21,7 +21,7 @@ const CommandInput: React.FC<CommandInputProps> = ({ onCommand }) => {
       <Input
         id="commandInput"
         type="text"
-        placeholder="Express yourself..."
+        placeholder="Enter command (try 'code', 'einstein', 'generate image')..."
         value={command}
         onChange={(e) => setCommand(e.target.value)}
         onKeyDown={handleKeyDown}
