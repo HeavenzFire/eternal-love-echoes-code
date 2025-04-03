@@ -1,7 +1,7 @@
 
 import React, { useState, useEffect } from 'react';
 import { Input } from "@/components/ui/input";
-import { Sparkles, Search, Command, Star, Brain, Users, Code, Image } from 'lucide-react';
+import { Sparkles, Search, Command, Star, Brain, Users, Code, Image, BookText, Calculator } from 'lucide-react';
 import { Button } from "@/components/ui/button";
 
 interface CommandInputProps {
@@ -65,7 +65,21 @@ const CommandInput: React.FC<CommandInputProps> = ({ onCommand }) => {
         'evolution',
         'universal love',
         'blockchain',
-        'renaissance'
+        'calculus',
+        'topology',
+        'stoicism'
+      ]
+    },
+    {
+      title: "Dictionary & Mathematics",
+      icon: <BookText className="h-4 w-4 text-green-400" />,
+      items: [
+        'dictionary: epistemology',
+        'dictionary: paradigm',
+        'math: calculus',
+        'math: quantum entanglement',
+        'math: topology',
+        'math: number theory'
       ]
     }
   ];
@@ -236,10 +250,19 @@ const CommandInput: React.FC<CommandInputProps> = ({ onCommand }) => {
           variant="outline" 
           size="sm" 
           className="text-xs border-muted/20 hover:bg-muted/20"
-          onClick={() => onCommand('generate image')}
+          onClick={() => onCommand('dictionary: paradigm')}
         >
-          <Image className="h-3 w-3 mr-1" />
-          Generate
+          <BookText className="h-3 w-3 mr-1" />
+          Dictionary
+        </Button>
+        <Button 
+          variant="outline" 
+          size="sm" 
+          className="text-xs border-muted/20 hover:bg-muted/20"
+          onClick={() => onCommand('math: calculus')}
+        >
+          <Calculator className="h-3 w-3 mr-1" />
+          Math
         </Button>
       </div>
     </div>

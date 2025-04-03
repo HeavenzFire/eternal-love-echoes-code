@@ -1,6 +1,6 @@
 
 import React, { useState, useEffect } from 'react';
-import { Search, Book, Brain, Sparkles, Info, Filter, Lightbulb, X } from 'lucide-react';
+import { Search, Book, Brain, Sparkles, Info, Filter, Lightbulb, X, Calculator, BookText, Sigma } from 'lucide-react';
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
@@ -9,6 +9,9 @@ import {
   searchKnowledgeBase, 
   getKnowledgeRecommendations, 
   generateResponse,
+  findSimilarTerms,
+  getEquations,
+  getCategoryInfo,
   KnowledgeEntry
 } from '@/services/knowledgeBaseService';
 
@@ -25,7 +28,10 @@ const CATEGORIES = [
   { id: "technology", name: "Technology" },
   { id: "biology", name: "Biology" },
   { id: "psychology", name: "Psychology" },
-  { id: "history", name: "History" }
+  { id: "history", name: "History" },
+  { id: "dictionary", name: "Dictionary" },
+  { id: "thesaurus", name: "Thesaurus" },
+  { id: "astronomy", name: "Astronomy" }
 ];
 
 const KnowledgeQuery: React.FC<KnowledgeQueryProps> = ({ onQueryResult }) => {
@@ -37,11 +43,20 @@ const KnowledgeQuery: React.FC<KnowledgeQueryProps> = ({ onQueryResult }) => {
   const [recentQueries, setRecentQueries] = useState<string[]>([]);
   const [showSuggestions, setShowSuggestions] = useState(false);
   const [filters, setFilters] = useState<string[]>([]);
+  const [showEquations, setShowEquations] = useState(false);
+  const [relatedTerms, setRelatedTerms] = useState<string[]>([]);
+  const [equations, setEquations] = useState<string[]>([]);
+  const [categoryInfo, setCategoryInfo] = useState<{description: string, entries: number}>({description: "", entries: 0});
 
   useEffect(() => {
     // Initialize with recommendations
     setRecommendations(getKnowledgeRecommendations());
-  }, []);
+    
+    // Get category info
+    if (selectedCategory !== "all") {
+      setCategoryInfo(getCategoryInfo(selectedCategory));
+    }
+  }, [selectedCategory]);
 
   const handleQuerySubmit = () => {
     if (!query.trim()) return;
@@ -63,6 +78,10 @@ const KnowledgeQuery: React.FC<KnowledgeQueryProps> = ({ onQueryResult }) => {
       setResult(response);
       if (onQueryResult) onQueryResult(response);
       setSearching(false);
+      
+      // Get related terms and equations
+      setRelatedTerms(findSimilarTerms(query));
+      setEquations(getEquations(query));
       
       // Update recommendations based on the query
       setRecommendations(
@@ -86,6 +105,10 @@ const KnowledgeQuery: React.FC<KnowledgeQueryProps> = ({ onQueryResult }) => {
         category !== "all" ? category : undefined
       )
     );
+    
+    if (category !== "all") {
+      setCategoryInfo(getCategoryInfo(category));
+    }
   };
 
   const handleRecommendationClick = (key: string) => {
@@ -93,6 +116,10 @@ const KnowledgeQuery: React.FC<KnowledgeQueryProps> = ({ onQueryResult }) => {
     const response = generateResponse(key);
     setResult(response);
     if (onQueryResult) onQueryResult(response);
+    
+    // Get related terms and equations
+    setRelatedTerms(findSimilarTerms(key));
+    setEquations(getEquations(key));
     
     // Add to recent queries
     if (!recentQueries.includes(key) && recentQueries.length < 5) {
@@ -110,6 +137,23 @@ const KnowledgeQuery: React.FC<KnowledgeQueryProps> = ({ onQueryResult }) => {
 
   const removeFilter = (filter: string) => {
     setFilters(filters.filter(f => f !== filter));
+  };
+
+  const toggleEquations = () => {
+    setShowEquations(!showEquations);
+  };
+
+  const renderCategoryInfo = () => {
+    if (selectedCategory === "all") return null;
+    
+    return (
+      <div className="text-xs text-muted-foreground mb-2 flex items-center justify-between">
+        <span>{categoryInfo.description}</span>
+        <Badge variant="outline" className="text-[10px]">
+          {categoryInfo.entries} entries
+        </Badge>
+      </div>
+    );
   };
 
   return (
@@ -168,7 +212,7 @@ const KnowledgeQuery: React.FC<KnowledgeQueryProps> = ({ onQueryResult }) => {
                   <Sparkles className="h-3 w-3 mr-1" />
                   Popular Topics
                 </div>
-                {['quantum mechanics', 'consciousness', 'black hole', 'philosophy of mind', 'artificial intelligence'].map((topic, index) => (
+                {['quantum mechanics', 'consciousness', 'black hole', 'philosophy of mind', 'artificial intelligence', 'calculus', 'stoicism', 'epistemology'].map((topic, index) => (
                   <div 
                     key={index}
                     className="px-2 py-1 text-xs hover:bg-crimson/20 cursor-pointer rounded"
@@ -213,14 +257,76 @@ const KnowledgeQuery: React.FC<KnowledgeQueryProps> = ({ onQueryResult }) => {
       {result && (
         <div className="mt-3 text-sm p-3 rounded bg-black/20 text-muted-foreground animate-fade-in overflow-y-auto max-h-56">
           {result}
+          
+          {equations.length > 0 && (
+            <div className="mt-2">
+              <Button
+                variant="ghost"
+                size="sm"
+                onClick={toggleEquations}
+                className="text-xs p-1 h-auto"
+              >
+                <Calculator className="h-3 w-3 mr-1" />
+                {showEquations ? "Hide Equations" : "Show Equations"}
+              </Button>
+              
+              {showEquations && (
+                <div className="mt-1 p-2 bg-black/30 rounded text-xs">
+                  {equations.map((eq, idx) => (
+                    <div key={idx} className="my-1 font-mono">{eq}</div>
+                  ))}
+                </div>
+              )}
+            </div>
+          )}
+          
+          {relatedTerms.length > 0 && (
+            <div className="mt-2 flex flex-wrap gap-1">
+              {relatedTerms.map((term, idx) => (
+                <Badge 
+                  key={idx} 
+                  variant="outline" 
+                  className="text-xs cursor-pointer bg-black/20 hover:bg-crimson/20"
+                  onClick={() => {
+                    setQuery(term);
+                    handleQuerySubmit();
+                  }}
+                >
+                  {term}
+                </Badge>
+              ))}
+            </div>
+          )}
         </div>
       )}
       
       <div className="mt-4">
-        <h4 className="text-xs font-medium mb-2 flex items-center">
-          <Sparkles className="h-3 w-3 mr-1 text-crimson" />
-          Knowledge Categories
-        </h4>
+        <div className="flex justify-between items-center mb-2">
+          <h4 className="text-xs font-medium flex items-center">
+            <Sparkles className="h-3 w-3 mr-1 text-crimson" />
+            Knowledge Categories
+          </h4>
+          <div className="flex gap-1">
+            <Badge 
+              variant="outline" 
+              className="cursor-pointer text-[10px] px-1 h-5"
+              onClick={() => setSelectedCategory("dictionary")}
+            >
+              <BookText className="h-3 w-3 mr-1" />
+              Dictionary
+            </Badge>
+            <Badge 
+              variant="outline" 
+              className="cursor-pointer text-[10px] px-1 h-5"
+              onClick={() => setSelectedCategory("mathematics")}
+            >
+              <Sigma className="h-3 w-3 mr-1" />
+              Math
+            </Badge>
+          </div>
+        </div>
+        
+        {renderCategoryInfo()}
         
         <div className="overflow-x-auto pb-1">
           <Tabs defaultValue="all" className="w-full">

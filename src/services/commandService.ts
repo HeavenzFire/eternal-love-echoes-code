@@ -1,5 +1,6 @@
+
 import { HistoricalFigure, getFigureById } from "@/data/historicalFigures";
-import { generateResponse } from "@/services/knowledgeBaseService";
+import { generateResponse, findSimilarTerms, getEquations } from "@/services/knowledgeBaseService";
 
 type CommandHandlerOutput = {
   message: string;
@@ -87,6 +88,7 @@ export const handleToggleKnowledge = (
 > Einstein's cosmic database connection established.
 > This repository contains comprehensive knowledge across physics, philosophy, mathematics, spirituality, and more.
 > Query any subject to receive detailed insights drawn from the wisdom of the greatest minds across time.
+> The system now includes mathematical equations, dictionary entries, and related concepts.
     `
     : `
 > KNOWLEDGE REPOSITORY CLOSED
@@ -166,6 +168,48 @@ export const handleActivateHistoricalFigure = (
   };
 };
 
+export const handleDictionaryLookup = (
+  term: string
+): CommandHandlerOutput => {
+  const response = generateResponse(term);
+  const related = findSimilarTerms(term);
+  const relatedStr = related.length > 0 ? "\n> Related terms: " + related.join(", ") : "";
+  
+  return {
+    message: `
+> DICTIONARY LOOKUP: "${term.toUpperCase()}"
+> 
+> ${response}
+> ${relatedStr}
+    `,
+    showKnowledgePanel: true,
+    showCodeEditor: false,
+    showVisioNET: false,
+    selectedAvatar: "einstein",
+  };
+};
+
+export const handleMathematicalQuery = (
+  query: string
+): CommandHandlerOutput => {
+  const response = generateResponse(query);
+  const equations = getEquations(query);
+  const equationsStr = equations.length > 0 ? "\n> Equations:\n> " + equations.join("\n> ") : "";
+  
+  return {
+    message: `
+> MATHEMATICAL QUERY: "${query.toUpperCase()}"
+> 
+> ${response}
+> ${equationsStr}
+    `,
+    showKnowledgePanel: true,
+    showCodeEditor: false,
+    showVisioNET: false,
+    selectedAvatar: "pythagoras",
+  };
+};
+
 export const handleDefaultCommand = (
   command: string
 ): CommandHandlerOutput => ({
@@ -178,6 +222,8 @@ export const handleDefaultCommand = (
 > Try "change sigil" to transform the central energy node.
 > Try "einstein" or "knowledge" to access the cosmic knowledge repository.
 > Try "visionaries" or "yeshua" to explore great minds of history.
+> Try "dictionary: [term]" to look up definitions and related terms.
+> Try "math: [topic]" to explore mathematical concepts and equations.
   `,
 });
 
@@ -216,13 +262,25 @@ export const handleIntelligentQuery = (
   query: string
 ): CommandHandlerOutput => {
   const response = generateResponse(query);
+  const equations = getEquations(query);
+  const relatedTerms = findSimilarTerms(query);
+  
+  let equationsStr = "";
+  if (equations.length > 0) {
+    equationsStr = "\n> Related equations:\n> " + equations.join("\n> ");
+  }
+  
+  let relatedStr = "";
+  if (relatedTerms.length > 0) {
+    relatedStr = "\n> Related concepts: " + relatedTerms.join(", ");
+  }
   
   return {
     message: `
 > INTELLIGENT QUERY PROCESSED
 > Query: "${query}"
 > 
-> ${response}
+> ${response}${equationsStr}${relatedStr}
 > 
 > The intelligence system remains active for further exploration.
     `,

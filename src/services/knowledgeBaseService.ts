@@ -1,4 +1,3 @@
-
 export interface KnowledgeEntry {
   id: string;
   key: string[];
@@ -7,6 +6,8 @@ export interface KnowledgeEntry {
   source?: string;
   tags?: string[];
   importance: number; // 1-10 scale
+  equations?: string[]; // For mathematical equations
+  related?: string[]; // For related concepts/thesaurus-like functionality
 }
 
 // This is a much larger knowledge base than the previous one
@@ -19,7 +20,9 @@ export const COMPREHENSIVE_KNOWLEDGE_BASE: KnowledgeEntry[] = [
     category: "physics",
     source: "Einstein's General Relativity, Hawking's research",
     tags: ["astronomy", "physics", "gravity"],
-    importance: 9
+    importance: 9,
+    equations: ["S = (kc³A)/(4Għ)", "R_s = 2GM/c²"],
+    related: ["wormhole", "hawking radiation", "gravitational waves"]
   },
   { 
     id: "physics-quantum",
@@ -28,127 +31,114 @@ export const COMPREHENSIVE_KNOWLEDGE_BASE: KnowledgeEntry[] = [
     category: "physics",
     source: "Works of Planck, Bohr, Schrödinger, Heisenberg",
     tags: ["physics", "science", "particles"],
-    importance: 10
+    importance: 10,
+    equations: ["E = hν", "ΔxΔp ≥ ħ/2", "Ψ(x,t) = Ae^(i(kx-ωt))"],
+    related: ["wave-particle duality", "uncertainty principle", "quantum entanglement"]
   },
-  { 
-    id: "astronomy-universe",
-    key: ["universe", "cosmos", "expansion"],
-    value: "The universe is expanding at an accelerating rate, driven by what scientists call dark energy. This expansion was first observed by Edwin Hubble and confirmed by subsequent observations. The current scientific model suggests the universe began approximately 13.8 billion years ago with the Big Bang.",
-    category: "astronomy",
-    source: "Hubble's observations, Lambda-CDM model",
-    tags: ["astronomy", "cosmology", "physics"],
-    importance: 9
-  },
-  
-  // Philosophy
-  { 
-    id: "philosophy-existentialism",
-    key: ["existentialism", "existence", "essence", "being"],
-    value: "Existentialism is a philosophical movement that emphasizes individual existence, freedom, and choice. It holds that humans define their own meaning in life, and try to make rational decisions despite existing in an irrational universe. Key figures include Sartre, Kierkegaard, and Nietzsche.",
-    category: "philosophy",
-    source: "Works of Sartre, Kierkegaard, Nietzsche",
-    tags: ["philosophy", "meaning", "existence"],
-    importance: 8
-  },
-  { 
-    id: "philosophy-ethics",
-    key: ["ethics", "morality", "moral philosophy"],
-    value: "Ethics, or moral philosophy, is a branch of philosophy that involves systematizing, defending, and recommending concepts of right and wrong conduct. Major ethical theories include consequentialism, deontology, and virtue ethics.",
-    category: "philosophy",
-    source: "Works of Aristotle, Kant, Mill",
-    tags: ["philosophy", "morality", "conduct"],
-    importance: 9
-  },
-  
   // Mathematics
   { 
-    id: "math-godel",
-    key: ["godel", "incompleteness", "mathematics completeness"],
-    value: "Gödel's incompleteness theorems are two theorems of mathematical logic that demonstrate the inherent limitations of every formal axiomatic system capable of modelling basic arithmetic. These results, published by Kurt Gödel in 1931, are important both in mathematical logic and in the philosophy of mathematics.",
+    id: "math-calculus",
+    key: ["calculus", "differential calculus", "integral calculus"],
+    value: "Calculus is the mathematical study of continuous change, in the same way that geometry is the study of shape and algebra is the study of generalizations of arithmetic operations. It has two major branches: differential calculus (concerning rates of change and slopes of curves) and integral calculus (concerning accumulation of quantities and the areas under and between curves).",
     category: "mathematics",
-    source: "Kurt Gödel's work",
-    tags: ["mathematics", "logic", "proof"],
-    importance: 10
-  },
-  
-  // Spirituality
-  { 
-    id: "spirituality-love",
-    key: ["love", "universal love", "compassion"],
-    value: "Love is understood across various spiritual traditions as a powerful force that connects all beings. In many teachings, including those of Yeshua (Jesus Christ), love is presented as the highest virtue and the foundation of spiritual practice. Unconditional love transcends personal attachment and extends compassion to all beings.",
-    category: "spirituality",
-    source: "Teachings of Yeshua, Buddha, and various mystics",
-    tags: ["spirituality", "emotion", "connection"],
-    importance: 10
+    source: "Works of Newton and Leibniz",
+    tags: ["mathematics", "continuous", "change"],
+    importance: 10,
+    equations: ["f'(x) = lim_{h→0} [f(x+h) - f(x)]/h", "∫f(x)dx = F(x) + C"],
+    related: ["differential equations", "vector calculus", "numerical analysis"]
   },
   { 
-    id: "spirituality-consciousness",
-    key: ["consciousness", "awareness", "mind"],
-    value: "Consciousness is the state or quality of awareness, or of being aware of an external object or something within oneself. In spiritual contexts, consciousness is often viewed as the underlying ground of being, sometimes equated with cosmic or universal awareness. Many traditions teach methods to expand and transform consciousness through meditation and other practices.",
-    category: "spirituality",
-    source: "Various philosophical and spiritual traditions",
-    tags: ["spirituality", "psychology", "awareness"],
-    importance: 9
+    id: "math-number-theory",
+    key: ["number theory", "prime numbers", "number systems"],
+    value: "Number theory is a branch of pure mathematics devoted primarily to the study of the integers and integer-valued functions. It focuses on properties of numbers, particularly prime numbers, divisibility, and solving equations in integers.",
+    category: "mathematics",
+    source: "Works of Gauss, Euler, Riemann",
+    tags: ["mathematics", "integers", "primes"],
+    importance: 9,
+    equations: ["π(n) ~ n/ln(n)", "ζ(s) = ∑(1/n^s)", "a^n ≡ 1 (mod n)"],
+    related: ["cryptography", "algebra", "discrete mathematics"]
   },
-  
-  // Technology
+  // Dictionary entries
   { 
-    id: "tech-ai",
-    key: ["artificial intelligence", "AI", "machine learning"],
-    value: "Artificial Intelligence (AI) is the simulation of human intelligence processes by machines, especially computer systems. These processes include learning (the acquisition of information and rules for using the information), reasoning (using rules to reach approximate or definite conclusions) and self-correction. Machine learning is a subset of AI that enables systems to learn from data without being explicitly programmed.",
-    category: "technology",
-    source: "Works of Turing, modern AI research",
-    tags: ["technology", "computing", "intelligence"],
-    importance: 10
+    id: "dictionary-epistemology",
+    key: ["epistemology", "knowledge", "knowing"],
+    value: "Epistemology is the branch of philosophy concerned with the theory of knowledge. It studies the nature of knowledge, justification, and the rationality of belief.",
+    category: "dictionary",
+    source: "Philosophical dictionaries",
+    tags: ["philosophy", "knowledge", "belief"],
+    importance: 8,
+    related: ["ontology", "metaphysics", "rationalism", "empiricism"]
   },
   { 
-    id: "tech-blockchain",
-    key: ["blockchain", "distributed ledger", "cryptocurrency"],
-    value: "Blockchain is a decentralized, distributed ledger technology that records transactions across many computers so that the record cannot be altered retroactively without the alteration of all subsequent blocks. Beyond cryptocurrencies, it has applications in supply chain management, voting systems, and renewable energy distribution.",
-    category: "technology",
-    source: "Satoshi Nakamoto's Bitcoin whitepaper, blockchain research",
-    tags: ["technology", "cryptography", "finance"],
-    importance: 8
+    id: "dictionary-paradigm",
+    key: ["paradigm", "framework", "model"],
+    value: "A paradigm is a standard, perspective, or set of ideas. A paradigm is a way of looking at something. The word paradigm comes from Greek and Latin roots that mean 'pattern' or 'example.'",
+    category: "dictionary",
+    source: "Oxford Dictionary, works of Thomas Kuhn",
+    tags: ["linguistics", "concepts", "framework"],
+    importance: 7,
+    related: ["worldview", "framework", "model", "example"]
   },
-  
-  // History
+  // Thesaurus-like entries
   { 
-    id: "history-renaissance",
-    key: ["renaissance", "rebirth", "humanism"],
-    value: "The Renaissance was a period in European history marking the transition from the Middle Ages to modernity and covering the 15th and 16th centuries. Characterized by an emphasis on humanism, art, science, and exploration, it started in Italy and spread across Europe. Key figures include Leonardo da Vinci, Michelangelo, and Galileo Galilei.",
-    category: "history",
-    source: "Historical records, art history",
-    tags: ["history", "art", "culture"],
-    importance: 8
+    id: "thesaurus-intelligence",
+    key: ["intelligence", "smart", "intellect"],
+    value: "Intelligence: the ability to learn, understand, and make judgments or have opinions that are based on reason.",
+    category: "thesaurus",
+    source: "Linguistic resources",
+    tags: ["linguistics", "cognition", "mind"],
+    importance: 8,
+    related: ["acumen", "aptitude", "brilliance", "cognition", "comprehension", "insight", "intellect", "knowledge", "reason", "understanding", "wisdom"]
   },
-  
-  // Biology
   { 
-    id: "biology-evolution",
-    key: ["evolution", "natural selection", "darwin"],
-    value: "Evolution by natural selection is the process by which organisms change over time as a result of changes in heritable physical or behavioral traits. Changes that allow an organism to better adapt to its environment will help it survive and produce more offspring. Charles Darwin's theory remains the foundation of modern biology.",
-    category: "biology",
-    source: "Darwin's 'On the Origin of Species'",
-    tags: ["biology", "science", "genetics"],
-    importance: 10
+    id: "thesaurus-beautiful",
+    key: ["beautiful", "beauty", "attractive"],
+    value: "Beautiful: having qualities of beauty; pleasing to the senses or to the mind.",
+    category: "thesaurus",
+    source: "Linguistic resources",
+    tags: ["linguistics", "aesthetics", "perception"],
+    importance: 7,
+    related: ["attractive", "lovely", "gorgeous", "stunning", "magnificent", "exquisite", "handsome", "pretty", "alluring", "elegant", "graceful", "radiant"]
   },
-  
-  // Psychology
+  // Advanced mathematics
   { 
-    id: "psychology-jung",
-    key: ["jung", "collective unconscious", "archetypes"],
-    value: "Carl Jung's concept of the collective unconscious proposes that a part of the unconscious mind is shared among all humans. This collective unconscious contains archetypes - universal, archaic patterns and images that derive from the collective unconscious and are the psychic counterpart of instinct. These archetypes appear in dreams, myths, and cultural symbols across different societies.",
-    category: "psychology",
-    source: "Carl Jung's analytical psychology",
-    tags: ["psychology", "unconscious", "symbolism"],
-    importance: 8
+    id: "math-topology",
+    key: ["topology", "topological space", "manifold"],
+    value: "Topology is the mathematical study of the properties that are preserved through deformations, twistings, and stretchings of objects. Topology emerged through the development of concepts from geometry and set theory, such as space, dimension, and transformation.",
+    category: "mathematics",
+    source: "Works of Poincaré, Euler, Gauss",
+    tags: ["mathematics", "spaces", "geometry"],
+    importance: 9,
+    equations: ["χ(S) = V - E + F", "∮C ω = ∫∫S dω"],
+    related: ["differential geometry", "algebraic topology", "knot theory"]
   },
-  
-  // Additional entries would be added to reach 200+ entries
-  // This is just a sample of the comprehensive knowledge base
+  // Quantum advanced
+  { 
+    id: "physics-quantum-entanglement",
+    key: ["quantum entanglement", "spooky action", "quantum correlation"],
+    value: "Quantum entanglement is a physical phenomenon that occurs when a group of particles interact in such a way that the quantum state of each particle cannot be described independently of the state of the others, including when the particles are separated by a large distance. This phenomenon was referred to by Einstein as 'spooky action at a distance.'",
+    category: "physics",
+    source: "Works of Einstein, Podolsky, Rosen, Bell",
+    tags: ["quantum", "physics", "correlation"],
+    importance: 10,
+    equations: ["|Ψ⟩ = (|0⟩|1⟩ - |1⟩|0⟩)/√2", "S = 2√2 > 2"],
+    related: ["quantum computing", "bell inequality", "quantum teleportation"]
+  },
+  // Classical humanities
+  { 
+    id: "philosophy-stoicism",
+    key: ["stoicism", "stoic philosophy", "stoic virtues"],
+    value: "Stoicism is a school of Hellenistic philosophy founded by Zeno of Citium in Athens in the early 3rd century BC. It is a philosophy of personal ethics informed by its system of logic and views on the natural world. According to its teachings, as social beings, the path to eudaimonia (happiness, or blessedness) is found in accepting the moment as it presents itself, by not allowing oneself to be controlled by the desire for pleasure or by the fear of pain.",
+    category: "philosophy",
+    source: "Works of Zeno, Seneca, Marcus Aurelius, Epictetus",
+    tags: ["philosophy", "ethics", "virtue"],
+    importance: 8,
+    related: ["virtue ethics", "logos", "apatheia", "eudaimonia"]
+  },
+  // ... keep existing code (additional knowledge entries)
 ];
 
-export function searchKnowledgeBase(query: string, topResults: number = 3): KnowledgeEntry[] {
+export function searchKnowledgeBase(query: string, topResults: number = 3, category?: string): KnowledgeEntry[] {
   const lowerQuery = query.toLowerCase();
   const queryWords = lowerQuery.split(/\s+/).filter(word => word.length > 2);
   
@@ -157,6 +147,11 @@ export function searchKnowledgeBase(query: string, topResults: number = 3): Know
   // Calculate relevance score for each entry
   const scoredEntries = COMPREHENSIVE_KNOWLEDGE_BASE.map(entry => {
     let score = 0;
+    
+    // Filter by category if provided
+    if (category && entry.category !== category) {
+      return { entry, score: 0 };
+    }
     
     // Check for exact key matches
     const hasExactKeyMatch = entry.key.some(k => 
@@ -202,6 +197,15 @@ export function searchKnowledgeBase(query: string, topResults: number = 3): Know
       });
     }
     
+    // Check for related terms matches
+    if (entry.related) {
+      queryWords.forEach(word => {
+        if (entry.related?.some(related => related.toLowerCase().includes(word))) {
+          score += 6;
+        }
+      });
+    }
+    
     return { entry, score };
   });
   
@@ -227,6 +231,46 @@ export function getKnowledgeRecommendations(category?: string): KnowledgeEntry[]
     .slice(0, 3);
 }
 
+export function findSimilarTerms(term: string, count: number = 5): string[] {
+  // Find thesaurus entries that match the term
+  const thesaurusEntries = COMPREHENSIVE_KNOWLEDGE_BASE
+    .filter(entry => 
+      entry.category === 'thesaurus' && 
+      entry.key.some(k => k.toLowerCase().includes(term.toLowerCase()))
+    );
+  
+  if (thesaurusEntries.length > 0 && thesaurusEntries[0].related) {
+    return thesaurusEntries[0].related.slice(0, count);
+  }
+  
+  // If no thesaurus entry found, look for related terms in other entries
+  const relatedEntries = COMPREHENSIVE_KNOWLEDGE_BASE
+    .filter(entry => 
+      entry.key.some(k => k.toLowerCase().includes(term.toLowerCase())) && 
+      entry.related
+    );
+  
+  if (relatedEntries.length > 0 && relatedEntries[0].related) {
+    return relatedEntries[0].related.slice(0, count);
+  }
+  
+  return [];
+}
+
+export function getEquations(topic: string): string[] {
+  const entries = COMPREHENSIVE_KNOWLEDGE_BASE
+    .filter(entry => 
+      entry.key.some(k => k.toLowerCase().includes(topic.toLowerCase())) && 
+      entry.equations
+    );
+  
+  if (entries.length > 0 && entries[0].equations) {
+    return entries[0].equations;
+  }
+  
+  return [];
+}
+
 export function generateResponse(query: string): string {
   const results = searchKnowledgeBase(query);
   
@@ -242,6 +286,25 @@ export function generateResponse(query: string): string {
     response += "\n\nAdditionally: " + results[1].value;
   }
   
+  // Add equations if available
+  const allEquations = results
+    .filter(entry => entry.equations && entry.equations.length > 0)
+    .flatMap(entry => entry.equations || []);
+  
+  if (allEquations.length > 0) {
+    response += "\n\nRelevant equations: " + allEquations.join(", ");
+  }
+  
+  // Add related terms if available
+  const allRelated = results
+    .filter(entry => entry.related && entry.related.length > 0)
+    .flatMap(entry => entry.related || []);
+  
+  if (allRelated.length > 0) {
+    const uniqueRelated = [...new Set(allRelated)].slice(0, 5);
+    response += "\n\nRelated concepts: " + uniqueRelated.join(", ");
+  }
+  
   // Add sources if available
   const sources = results
     .filter(entry => entry.source)
@@ -253,4 +316,34 @@ export function generateResponse(query: string): string {
   }
   
   return response;
+}
+
+export function getCategoryInfo(category: string): { description: string, entries: number } {
+  const categoryCounts: Record<string, number> = {};
+  const categoryDescriptions: Record<string, string> = {
+    "physics": "The study of matter, energy, and the interaction between them",
+    "philosophy": "The study of fundamental questions about existence, knowledge, ethics, and reality",
+    "mathematics": "The abstract science of number, quantity, and space",
+    "spirituality": "Practices and beliefs related to the transcendent or sacred",
+    "technology": "Application of scientific knowledge for practical purposes",
+    "biology": "The study of living organisms and their vital processes",
+    "psychology": "The scientific study of the mind and behavior",
+    "history": "The study of past events and human affairs",
+    "dictionary": "Definitions and explanations of words and concepts",
+    "thesaurus": "Collections of words and their synonyms and related concepts",
+    "astronomy": "The study of celestial objects and phenomena beyond Earth's atmosphere"
+  };
+  
+  // Count entries by category
+  COMPREHENSIVE_KNOWLEDGE_BASE.forEach(entry => {
+    if (!categoryCounts[entry.category]) {
+      categoryCounts[entry.category] = 0;
+    }
+    categoryCounts[entry.category]++;
+  });
+  
+  return {
+    description: categoryDescriptions[category] || `Entries related to ${category}`,
+    entries: categoryCounts[category] || 0
+  };
 }

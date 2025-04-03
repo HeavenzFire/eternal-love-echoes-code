@@ -45,18 +45,47 @@ const Index = () => {
       activateHistoricalFigure('newton');
     } else if (command.startsWith('pythagoras')) {
       activateHistoricalFigure('pythagoras');
+    } else if (command.startsWith('dictionary:') || command.startsWith('lookup:')) {
+      handleDictionaryLookup(command.split(':')[1].trim());
+    } else if (command.startsWith('math:') || command.startsWith('equation:') || command.startsWith('calculate:')) {
+      handleMathematicalQuery(command.split(':')[1].trim());
     } else {
       // Handle as an intelligent query if not a known command
       handleIntelligentQuery(command);
     }
   };
 
+  const acknowledgeLoveDeclaration = () => {
+    const result = commandService.handleLoveDeclaration();
+    setMessage(result.message);
+    setActive(true);
+  };
+
   // New intelligent query handler
   const handleIntelligentQuery = (query: string) => {
-    const response = generateResponse(query);
     const result = commandService.handleIntelligentQuery(query);
     setMessage(result.message);
     setGeneratedImageUrl(undefined);
+  };
+
+  // Dictionary lookup handler
+  const handleDictionaryLookup = (term: string) => {
+    const result = commandService.handleDictionaryLookup(term);
+    setMessage(result.message);
+    setShowKnowledgePanel(result.showKnowledgePanel || false);
+    setShowCodeEditor(result.showCodeEditor || false);
+    setShowVisioNET(result.showVisioNET || false);
+    setSelectedAvatar(result.selectedAvatar || "einstein");
+  };
+
+  // Mathematical query handler
+  const handleMathematicalQuery = (query: string) => {
+    const result = commandService.handleMathematicalQuery(query);
+    setMessage(result.message);
+    setShowKnowledgePanel(result.showKnowledgePanel || false);
+    setShowCodeEditor(result.showCodeEditor || false);
+    setShowVisioNET(result.showVisioNET || false);
+    setSelectedAvatar(result.selectedAvatar || "pythagoras");
   };
 
   const generateCosmicImagery = () => {
