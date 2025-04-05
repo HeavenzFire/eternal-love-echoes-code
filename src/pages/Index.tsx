@@ -1,4 +1,3 @@
-
 import React, { useState } from 'react';
 import CosmicBackground from '@/components/layout/CosmicBackground';
 import MainInterface from '@/components/MainInterface';
@@ -23,6 +22,8 @@ const Index = () => {
   const [showMindMap, setShowMindMap] = useState(false);
   const [showPDFTools, setShowPDFTools] = useState(false);
   const [showBodyImageGenerator, setShowBodyImageGenerator] = useState(false);
+  const [showImageEditor, setShowImageEditor] = useState(false);
+  const [showHumanAvatarSystem, setShowHumanAvatarSystem] = useState(false);
   const [selectedAvatar, setSelectedAvatar] = useState<string>("einstein");
 
   // Command handling
@@ -49,6 +50,10 @@ const Index = () => {
       togglePDFTools();
     } else if (command === 'body generator' || command === 'human body' || command === 'anatomy') {
       toggleBodyImageGenerator();
+    } else if (command === 'image editor' || command === 'edit image' || command === 'photo') {
+      toggleImageEditor();
+    } else if (command === 'human avatar' || command === '3d body' || command === 'avatar') {
+      toggleHumanAvatarSystem();
     } else if (command.startsWith('yeshua') || command.startsWith('jesus')) {
       activateHistoricalFigure('yeshua');
     } else if (command.startsWith('tesla')) {
@@ -75,14 +80,12 @@ const Index = () => {
     setActive(true);
   };
 
-  // New intelligent query handler
   const handleIntelligentQuery = (query: string) => {
     const result = commandService.handleIntelligentQuery(query);
     setMessage(result.message);
     setGeneratedImageUrl(undefined);
   };
 
-  // Dictionary lookup handler
   const handleDictionaryLookup = (term: string) => {
     const result = commandService.handleDictionaryLookup(term);
     setMessage(result.message);
@@ -92,7 +95,6 @@ const Index = () => {
     setSelectedAvatar(result.selectedAvatar || "einstein");
   };
 
-  // Mathematical query handler
   const handleMathematicalQuery = (query: string) => {
     const result = commandService.handleMathematicalQuery(query);
     setMessage(result.message);
@@ -107,7 +109,6 @@ const Index = () => {
     setMessage(result.message);
     setIsGeneratingImage(true);
 
-    // Simulate image generation with a delay
     setTimeout(() => {
       const randomImageUrl = cosmicImageryUrls[Math.floor(Math.random() * cosmicImageryUrls.length)];
       const completionResult = commandService.handleImageGenerated(randomImageUrl);
@@ -118,7 +119,6 @@ const Index = () => {
   };
 
   const changeBackground = () => {
-    // Select a random gradient that's different from the current one
     let newGradientIndex;
     do {
       newGradientIndex = Math.floor(Math.random() * cosmicGradients.length);
@@ -130,7 +130,6 @@ const Index = () => {
   };
 
   const changeSigilVariant = () => {
-    // Rotate through sigil variants
     const variants: Array<"default" | "star" | "cosmic"> = ["default", "star", "cosmic"];
     const currentIndex = variants.indexOf(sigilVariant);
     const nextIndex = (currentIndex + 1) % variants.length;
@@ -151,6 +150,8 @@ const Index = () => {
     setShowMindMap(result.showMindMap || false);
     setShowPDFTools(result.showPDFTools || false);
     setShowBodyImageGenerator(result.showBodyImageGenerator || false);
+    setShowImageEditor(result.showImageEditor || false);
+    setShowHumanAvatarSystem(result.showHumanAvatarSystem || false);
     setSelectedAvatar(result.selectedAvatar || "einstein");
   };
 
@@ -164,6 +165,8 @@ const Index = () => {
     setShowMindMap(result.showMindMap || false);
     setShowPDFTools(result.showPDFTools || false);
     setShowBodyImageGenerator(result.showBodyImageGenerator || false);
+    setShowImageEditor(result.showImageEditor || false);
+    setShowHumanAvatarSystem(result.showHumanAvatarSystem || false);
     setSelectedAvatar(result.selectedAvatar || "tesla");
   };
 
@@ -177,9 +180,10 @@ const Index = () => {
     setShowMindMap(result.showMindMap || false);
     setShowPDFTools(result.showPDFTools || false);
     setShowBodyImageGenerator(result.showBodyImageGenerator || false);
+    setShowImageEditor(result.showImageEditor || false);
+    setShowHumanAvatarSystem(result.showHumanAvatarSystem || false);
   };
 
-  // New toggles for the new tools
   const toggleTextEditor = () => {
     const result = commandService.handleToggleTextEditor(!showTextEditor);
     setMessage(result.message);
@@ -190,6 +194,8 @@ const Index = () => {
     setShowMindMap(result.showMindMap || false);
     setShowPDFTools(result.showPDFTools || false);
     setShowBodyImageGenerator(result.showBodyImageGenerator || false);
+    setShowImageEditor(result.showImageEditor || false);
+    setShowHumanAvatarSystem(result.showHumanAvatarSystem || false);
     setSelectedAvatar(result.selectedAvatar || "shakespeare");
   };
 
@@ -203,6 +209,8 @@ const Index = () => {
     setShowMindMap(result.showMindMap || false);
     setShowPDFTools(result.showPDFTools || false);
     setShowBodyImageGenerator(result.showBodyImageGenerator || false);
+    setShowImageEditor(result.showImageEditor || false);
+    setShowHumanAvatarSystem(result.showHumanAvatarSystem || false);
     setSelectedAvatar(result.selectedAvatar || "davinci");
   };
 
@@ -216,7 +224,8 @@ const Index = () => {
     setShowMindMap(result.showMindMap || false);
     setShowPDFTools(result.showPDFTools || false);
     setShowBodyImageGenerator(result.showBodyImageGenerator || false);
-    setSelectedAvatar(result.selectedAvatar || "franklin");
+    setShowImageEditor(result.showImageEditor || false);
+    setShowHumanAvatarSystem(result.showHumanAvatarSystem || false);
   };
 
   const toggleBodyImageGenerator = () => {
@@ -229,6 +238,38 @@ const Index = () => {
     setShowMindMap(result.showMindMap || false);
     setShowPDFTools(result.showPDFTools || false);
     setShowBodyImageGenerator(result.showBodyImageGenerator || false);
+    setShowImageEditor(result.showImageEditor || false);
+    setShowHumanAvatarSystem(result.showHumanAvatarSystem || false);
+    setSelectedAvatar(result.selectedAvatar || "davinci");
+  };
+
+  const toggleImageEditor = () => {
+    const result = commandService.handleToggleImageEditor(!showImageEditor);
+    setMessage(result.message);
+    setShowKnowledgePanel(result.showKnowledgePanel || false);
+    setShowCodeEditor(result.showCodeEditor || false);
+    setShowVisioNET(result.showVisioNET || false);
+    setShowTextEditor(result.showTextEditor || false);
+    setShowMindMap(result.showMindMap || false);
+    setShowPDFTools(result.showPDFTools || false);
+    setShowBodyImageGenerator(result.showBodyImageGenerator || false);
+    setShowImageEditor(result.showImageEditor || false);
+    setShowHumanAvatarSystem(result.showHumanAvatarSystem || false);
+    setSelectedAvatar(result.selectedAvatar || "davinci");
+  };
+
+  const toggleHumanAvatarSystem = () => {
+    const result = commandService.handleToggleHumanAvatarSystem(!showHumanAvatarSystem);
+    setMessage(result.message);
+    setShowKnowledgePanel(result.showKnowledgePanel || false);
+    setShowCodeEditor(result.showCodeEditor || false);
+    setShowVisioNET(result.showVisioNET || false);
+    setShowTextEditor(result.showTextEditor || false);
+    setShowMindMap(result.showMindMap || false);
+    setShowPDFTools(result.showPDFTools || false);
+    setShowBodyImageGenerator(result.showBodyImageGenerator || false);
+    setShowImageEditor(result.showImageEditor || false);
+    setShowHumanAvatarSystem(result.showHumanAvatarSystem || false);
     setSelectedAvatar(result.selectedAvatar || "davinci");
   };
 
@@ -242,6 +283,8 @@ const Index = () => {
     setShowMindMap(result.showMindMap || false);
     setShowPDFTools(result.showPDFTools || false);
     setShowBodyImageGenerator(result.showBodyImageGenerator || false);
+    setShowImageEditor(result.showImageEditor || false);
+    setShowHumanAvatarSystem(result.showHumanAvatarSystem || false);
     setSelectedAvatar(result.selectedAvatar || id);
   };
 
@@ -266,7 +309,6 @@ const Index = () => {
     setMessage(response.message);
   };
 
-  // New handlers for the new tools
   const handleTextEditResult = (result: string) => {
     const response = commandService.handleTextEditResult(result);
     setMessage(response.message);
@@ -304,6 +346,27 @@ const Index = () => {
     });
   };
 
+  const handleImageEditResult = (imageUrl: string) => {
+    const response = commandService.handleImageEditResult(imageUrl);
+    setMessage(response.message);
+    toast({
+      title: "Image Editor",
+      description: "Image editing complete",
+    });
+  };
+
+  const handleHumanAvatarResult = (data: any) => {
+    const response = commandService.handleHumanAvatarResult(data);
+    setMessage(response.message);
+    if (data && data.avatarUrl) {
+      setGeneratedImageUrl(data.avatarUrl);
+    }
+    toast({
+      title: "Human Avatar System",
+      description: "Avatar operation completed",
+    });
+  };
+
   return (
     <>
       <CosmicBackground 
@@ -324,6 +387,8 @@ const Index = () => {
           showMindMap={showMindMap}
           showPDFTools={showPDFTools}
           showBodyImageGenerator={showBodyImageGenerator}
+          showImageEditor={showImageEditor}
+          showHumanAvatarSystem={showHumanAvatarSystem}
           selectedAvatar={selectedAvatar}
           onCommand={handleCommand}
           onSigilClick={handleSigilClick}
@@ -334,6 +399,8 @@ const Index = () => {
           onMindMapResult={handleMindMapResult}
           onPDFResult={handlePDFResult}
           onBodyImageResult={handleBodyImageResult}
+          onImageEditResult={handleImageEditResult}
+          onHumanAvatarResult={handleHumanAvatarResult}
           toggleKnowledgePanel={toggleKnowledgePanel}
           toggleCodeEditor={toggleCodeEditor}
           toggleVisioNET={toggleVisioNET}

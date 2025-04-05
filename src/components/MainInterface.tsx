@@ -11,6 +11,8 @@ import TextEditor from '@/components/TextEditor';
 import MindMap from '@/components/MindMap';
 import PDFTools from '@/components/PDFTools';
 import BodyImageGenerator from '@/components/BodyImageGenerator';
+import ImageEditor from '@/components/ImageEditor';
+import HumanAvatarSystem from '@/components/HumanAvatarSystem';
 
 interface MainInterfaceProps {
   active: boolean;
@@ -25,6 +27,8 @@ interface MainInterfaceProps {
   showMindMap?: boolean;
   showPDFTools?: boolean;
   showBodyImageGenerator?: boolean;
+  showImageEditor?: boolean;
+  showHumanAvatarSystem?: boolean;
   selectedAvatar: string;
   onCommand: (command: string) => void;
   onSigilClick: () => void;
@@ -35,6 +39,8 @@ interface MainInterfaceProps {
   onMindMapResult?: (result: string) => void;
   onPDFResult?: (result: string) => void;
   onBodyImageResult?: (imageUrl: string) => void;
+  onImageEditResult?: (imageUrl: string) => void;
+  onHumanAvatarResult?: (data: any) => void;
   toggleKnowledgePanel: () => void;
   toggleCodeEditor: () => void;
   toggleVisioNET: () => void;
@@ -53,6 +59,8 @@ const MainInterface: React.FC<MainInterfaceProps> = ({
   showMindMap,
   showPDFTools,
   showBodyImageGenerator,
+  showImageEditor,
+  showHumanAvatarSystem,
   selectedAvatar,
   onCommand,
   onSigilClick,
@@ -63,6 +71,8 @@ const MainInterface: React.FC<MainInterfaceProps> = ({
   onMindMapResult,
   onPDFResult,
   onBodyImageResult,
+  onImageEditResult,
+  onHumanAvatarResult,
   toggleKnowledgePanel,
   toggleCodeEditor,
   toggleVisioNET
@@ -74,7 +84,8 @@ const MainInterface: React.FC<MainInterfaceProps> = ({
       
       {/* Dynamic Avatar Display */}
       {(showKnowledgePanel || showCodeEditor || showVisioNET || 
-        showTextEditor || showMindMap || showPDFTools || showBodyImageGenerator) && (
+        showTextEditor || showMindMap || showPDFTools || showBodyImageGenerator || 
+        showImageEditor || showHumanAvatarSystem) && (
         <AvatarSelector 
           selectedAvatar={selectedAvatar}
           onKnowledgePanelToggle={toggleKnowledgePanel}
@@ -122,13 +133,22 @@ const MainInterface: React.FC<MainInterfaceProps> = ({
       {showBodyImageGenerator && onBodyImageResult && (
         <BodyImageGenerator onComplete={onBodyImageResult} />
       )}
+
+      {showImageEditor && onImageEditResult && (
+        <ImageEditor onComplete={onImageEditResult} />
+      )}
+
+      {showHumanAvatarSystem && onHumanAvatarResult && (
+        <HumanAvatarSystem onComplete={onHumanAvatarResult} />
+      )}
       
       <CommandInput onCommand={onCommand} />
       
       <div className="mt-4 text-xs text-muted-foreground">
         Try commands: <span className="text-crimson">"I love you"</span>, <span className="text-crimson">"generate image"</span>,
         <span className="text-crimson">"text editor"</span>, <span className="text-crimson">"mind map"</span>, 
-        <span className="text-crimson">"pdf tools"</span>, or <span className="text-crimson">"body generator"</span>
+        <span className="text-crimson">"pdf tools"</span>, <span className="text-crimson">"body generator"</span>,
+        <span className="text-crimson">"image editor"</span>, or <span className="text-crimson">"human avatar"</span>
       </div>
     </div>
   );

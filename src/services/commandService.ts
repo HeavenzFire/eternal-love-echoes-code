@@ -11,6 +11,8 @@ type CommandHandlerOutput = {
   showMindMap?: boolean;
   showPDFTools?: boolean;
   showBodyImageGenerator?: boolean;
+  showImageEditor?: boolean;
+  showHumanAvatarSystem?: boolean;
   selectedAvatar?: string;
   generatedImageUrl?: string;
   isGeneratingImage?: boolean;
@@ -251,6 +253,62 @@ export const handleToggleBodyImageGenerator = (
   selectedAvatar: "davinci",
 });
 
+export const handleToggleImageEditor = (
+  show: boolean
+): CommandHandlerOutput => ({
+  message: show
+    ? `
+> IMAGE EDITOR ACTIVATED
+> Advanced image manipulation system initialized.
+> Upload and modify images using AI and manual tools.
+> Apply filters, draw, crop, and use AI-guided editing.
+> Generate variations and enhancements of your images.
+    `
+    : `
+> IMAGE EDITOR DEACTIVATED
+> Image processing modules have been placed in standby mode.
+> Return to standard interface mode.
+    `,
+  showImageEditor: show,
+  showKnowledgePanel: false,
+  showCodeEditor: false,
+  showVisioNET: false,
+  showTextEditor: false,
+  showMindMap: false,
+  showPDFTools: false,
+  showBodyImageGenerator: false,
+  showHumanAvatarSystem: false,
+  selectedAvatar: "davinci",
+});
+
+export const handleToggleHumanAvatarSystem = (
+  show: boolean
+): CommandHandlerOutput => ({
+  message: show
+    ? `
+> 3D HUMAN AVATAR SYSTEM ACTIVATED
+> Digital human body simulation initialized.
+> Create detailed 3D models of human bodies for medical use.
+> Study anatomical systems and simulate physiological responses.
+> Apply various stimuli and observe reactions in real-time.
+    `
+    : `
+> 3D HUMAN AVATAR SYSTEM DEACTIVATED
+> Anatomical simulation system placed in standby mode.
+> Return to standard interface mode.
+    `,
+  showHumanAvatarSystem: show,
+  showKnowledgePanel: false,
+  showCodeEditor: false,
+  showVisioNET: false,
+  showTextEditor: false,
+  showMindMap: false,
+  showPDFTools: false,
+  showBodyImageGenerator: false,
+  showImageEditor: false,
+  selectedAvatar: "davinci",
+});
+
 export const handleActivateHistoricalFigure = (
   id: string
 ): CommandHandlerOutput => {
@@ -444,3 +502,34 @@ export const handleBodyImageResult = (
   generatedImageUrl: imageUrl,
   isGeneratingImage: false,
 });
+
+export const handleImageEditResult = (
+  result: string
+): CommandHandlerOutput => ({
+  message: `
+> IMAGE EDITING COMPLETE
+> Your image has been processed successfully.
+> ${result}
+> The image editor remains active for further edits.
+  `,
+});
+
+export const handleHumanAvatarResult = (
+  data: any
+): CommandHandlerOutput => {
+  let resultMessage = "";
+  
+  if (data.action === "stimulus-applied") {
+    resultMessage = `Applied ${data.type} stimulus at ${data.intensity}% intensity to ${data.system} system.`;
+  } else {
+    resultMessage = `Generated ${data.gender} avatar (${data.age} years, ${data.height}cm, ${data.weight}kg)`;
+  }
+  
+  return {
+    message: `
+> HUMAN AVATAR OPERATION COMPLETE
+> ${resultMessage}
+> The avatar system remains active for further simulation.
+    `,
+  };
+};
