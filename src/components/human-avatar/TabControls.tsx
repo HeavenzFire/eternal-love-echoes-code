@@ -81,7 +81,7 @@ const TabControls: React.FC<TabControlsProps> = ({
             stimulusType={stimulusType}
             setStimulusType={setStimulusType}
             stimulusIntensity={stimulusIntensity}
-            setStimulusIntensity={setStimulusIntensity}
+            setStimulusIntensity={value => setStimulusIntensity([value])}
             applyStimulus={applyStimulus}
           />
         </TabsContent>

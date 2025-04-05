@@ -23,8 +23,8 @@ const HumanAvatarSystem: React.FC<HumanAvatarSystemProps> = ({ onComplete }) => 
   const [rotationAngle, setRotationAngle] = useState<number>(0);
   const { toast } = useToast();
 
-  // Placeholder avatar URLs
-  const maleAvatarUrl = "https://assets.innovation.nejm.org/nejm/content/carousel/AR_simulator_small_384x384.webp";
+  // Anatomical avatar URLs
+  const maleAvatarUrl = "https://www.visiblebody.com/hubfs/learn/anatomy-and-physiology/skin/understanding-your-skin-layers-function-anatomy-1488x1060.jpg";
   const femaleAvatarUrl = "https://medicalhealth.plus/wp-content/uploads/2022/08/3D-Anatomy-Female-Body-Parts.webp";
   
   const currentAvatarUrl = gender === "male" ? maleAvatarUrl : femaleAvatarUrl;
@@ -109,11 +109,11 @@ const HumanAvatarSystem: React.FC<HumanAvatarSystemProps> = ({ onComplete }) => 
           bodyType={bodyType}
           setBodyType={setBodyType}
           age={age}
-          setAge={setAge}
+          setAge={(values) => setAge(values[0])}
           height={height}
-          setHeight={setHeight}
+          setHeight={(values) => setHeight(values[0])}
           weight={weight}
-          setWeight={setWeight}
+          setWeight={(values) => setWeight(values[0])}
           showSkin={showSkin}
           setShowSkin={setShowSkin}
           activeSystem={activeSystem}
@@ -121,7 +121,7 @@ const HumanAvatarSystem: React.FC<HumanAvatarSystemProps> = ({ onComplete }) => 
           stimulusType={stimulusType}
           setStimulusType={setStimulusType}
           stimulusIntensity={stimulusIntensity}
-          setStimulusIntensity={setStimulusIntensity}
+          setStimulusIntensity={(values) => setStimulusIntensity(values[0])}
           applyStimulus={applyStimulus}
           handleGenerateAvatar={handleGenerateAvatar}
         />

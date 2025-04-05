@@ -10,7 +10,7 @@ interface StimulusControlsProps {
   stimulusType: string;
   setStimulusType: (type: string) => void;
   stimulusIntensity: number;
-  setStimulusIntensity: (values: number[]) => void;
+  setStimulusIntensity: (value: number) => void;
   applyStimulus: () => void;
 }
 
@@ -48,7 +48,7 @@ const StimulusControls: React.FC<StimulusControlsProps> = ({
           min={10}
           max={100}
           step={5}
-          onValueChange={setStimulusIntensity}
+          onValueChange={(values) => setStimulusIntensity(values[0])}
         />
       </div>
       

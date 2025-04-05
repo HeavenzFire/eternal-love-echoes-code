@@ -1,7 +1,7 @@
 
 import React from 'react';
 import { Button } from '@/components/ui/button';
-import { ArrowDown, ArrowUp, Pause, Play } from 'lucide-react';
+import { ArrowDown, ArrowUp, Pause, Play, Layers } from 'lucide-react';
 
 interface AvatarDisplayProps {
   currentAvatarUrl: string;
@@ -20,11 +20,38 @@ const AvatarDisplay: React.FC<AvatarDisplayProps> = ({
   setRotationAngle,
   toggleAnimation,
 }) => {
+  // Anatomical model URLs based on system and gender
+  const getAnatomicalImageUrl = () => {
+    // These URLs should be replaced with actual anatomical model URLs in production
+    const anatomyURLs = {
+      male: {
+        nervous: "https://upload.wikimedia.org/wikipedia/commons/0/0b/Blausen_0657_MultipleSclerosisBrain.png",
+        cardiovascular: "https://cdn.britannica.com/51/64951-050-CECE3C7C/Human-heart.jpg",
+        muscular: "https://cdn.britannica.com/13/125313-050-18554CDD/human-muscular-system.jpg",
+        skeletal: "https://mymedicalscore.com/wp-content/uploads/2022/07/1_Human-Skeleton.jpg",
+        endocrine: "https://cdn.britannica.com/13/97813-050-3021AFC2/endocrine-system-arrangements-hormones-humans-organ-systems.jpg",
+        lymphatic: "https://cdn.britannica.com/87/117087-050-F061F890/lymphatic-system-primary-organs-humans.jpg"
+      },
+      female: {
+        nervous: "https://media.springernature.com/lw685/springer-static/image/art%3A10.1038%2Fs41593-021-00832-6/MediaObjects/41593_2021_832_Fig1_HTML.png",
+        cardiovascular: "https://www.ahajournals.org/cms/asset/5e13f15c-d094-41e4-917f-c0942e8a83fa/e013.fig.002.jpeg",
+        muscular: "https://cdn.britannica.com/13/125313-050-18554CDD/human-muscular-system.jpg",
+        skeletal: "https://thumbs.dreamstime.com/b/female-skeletal-system-d-rendered-illustration-79011802.jpg",
+        endocrine: "https://media.istockphoto.com/id/1393615344/vector/female-endocrine-system-diagram.jpg?s=612x612&w=0&k=20&c=ff2x7uZh3Rq7th8y_ogFBrvZBDCt-TW_4U_lOPcuiBc=",
+        lymphatic: "https://media.istockphoto.com/id/1334641355/vector/lymphatic-system-medical-educational-scheme.jpg?s=612x612&w=0&k=20&c=le2mOn5Qx2sFesDVxxJicUJ1yhWbtySDnvyeOAgZtRY="
+      }
+    };
+
+    // Get gender from URL, default to male
+    const gender = currentAvatarUrl.includes('female') ? 'female' : 'male';
+    return anatomyURLs[gender][activeSystem];
+  };
+
   return (
     <div className="col-span-2 relative flex justify-center items-center border border-muted-foreground/30 rounded-lg h-80 bg-background/20 overflow-hidden">
       <img 
-        src={currentAvatarUrl}
-        alt="3D Human Avatar" 
+        src={getAnatomicalImageUrl()}
+        alt={`3D Human Avatar - ${activeSystem} system`} 
         className={`max-w-full max-h-full object-contain transition-all duration-500 ${isAnimating ? 'animate-pulse' : ''}`}
         style={{ transform: `rotateY(${rotationAngle}deg)` }}
       />
@@ -53,7 +80,7 @@ const AvatarDisplay: React.FC<AvatarDisplayProps> = ({
           <ArrowDown className="h-4 w-4" />
         </Button>
       </div>
-      
+
       {/* Animation control */}
       <Button 
         variant={isAnimating ? "destructive" : "default"}
