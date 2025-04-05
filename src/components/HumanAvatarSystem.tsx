@@ -1,4 +1,3 @@
-
 import React, { useState } from 'react';
 import { Button } from '@/components/ui/button';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
@@ -8,8 +7,8 @@ import { Input } from '@/components/ui/input';
 import { Checkbox } from '@/components/ui/checkbox';
 import { Label } from '@/components/ui/label';
 import { useToast } from '@/hooks/use-toast';
-import { User, Users, Brain, Heart, Activity, Dna, View, Male, Female, UserRound, 
-         Circle, ArrowDown, ArrowUp, Eye, Play, Pause } from 'lucide-react';
+import { User, Users, Brain, Heart, Activity, Dna, View, Circle, ArrowDown, 
+         ArrowUp, Eye, Play, Pause, UserRound } from 'lucide-react';
 
 interface HumanAvatarSystemProps {
   onComplete: (data: any) => void;
@@ -176,13 +175,13 @@ const HumanAvatarSystem: React.FC<HumanAvatarSystemProps> = ({ onComplete }) => 
                     <SelectContent>
                       <SelectItem value="male">
                         <div className="flex items-center">
-                          <Male className="h-3 w-3 mr-2" />
+                          <User className="h-3 w-3 mr-2" />
                           Male
                         </div>
                       </SelectItem>
                       <SelectItem value="female">
                         <div className="flex items-center">
-                          <Female className="h-3 w-3 mr-2" />
+                          <UserRound className="h-3 w-3 mr-2" />
                           Female
                         </div>
                       </SelectItem>
