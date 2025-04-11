@@ -1,5 +1,5 @@
 import { HistoricalFigure, getFigureById } from "@/data/historicalFigures";
-import { generateResponse, findSimilarTerms, getEquations } from "@/services/knowledgeBaseService";
+import { generateResponse, findSimilarTerms, getEquations, getCitationsForTopic } from "@/services/knowledgeBaseService";
 import { useToast } from "@/hooks/use-toast";
 
 type CommandHandlerOutput = {
@@ -13,6 +13,7 @@ type CommandHandlerOutput = {
   showBodyImageGenerator?: boolean;
   showImageEditor?: boolean;
   showHumanAvatarSystem?: boolean;
+  showCitationManager?: boolean;  // New feature
   selectedAvatar?: string;
   generatedImageUrl?: string;
   isGeneratingImage?: boolean;
@@ -92,9 +93,9 @@ export const handleToggleKnowledge = (
     ? `
 > ADVANCED KNOWLEDGE REPOSITORY ACCESSED
 > Einstein's cosmic database connection established.
-> This repository contains comprehensive knowledge across physics, philosophy, mathematics, spirituality, and more.
+> This repository now contains comprehensive knowledge across physics, philosophy, mathematics, spirituality, neuroscience, computer science, and more.
 > Query any subject to receive detailed insights drawn from the wisdom of the greatest minds across time.
-> The system now includes mathematical equations, dictionary entries, and related concepts.
+> New features: Academic citations, bookmarks, and extended topic coverage.
     `
     : `
 > KNOWLEDGE REPOSITORY CLOSED
@@ -104,6 +105,7 @@ export const handleToggleKnowledge = (
   showKnowledgePanel: show,
   showCodeEditor: false,
   showVisioNET: false,
+  showCitationManager: false,
   selectedAvatar: "einstein",
 });
 
@@ -309,6 +311,29 @@ export const handleToggleHumanAvatarSystem = (
   selectedAvatar: "davinci",
 });
 
+export const handleToggleCitationManager = (
+  show: boolean
+): CommandHandlerOutput => ({
+  message: show
+    ? `
+> CITATION MANAGER ACTIVATED
+> Academic reference system initialized.
+> Browse, format, and export citations from the knowledge repository.
+> Support for APA, MLA, and Chicago citation styles.
+> Export citations for academic and research purposes.
+    `
+    : `
+> CITATION MANAGER DEACTIVATED
+> Academic reference system has been placed in standby mode.
+> Return to standard interface mode.
+    `,
+  showCitationManager: show,
+  showKnowledgePanel: false,
+  showCodeEditor: false,
+  showVisioNET: false,
+  selectedAvatar: "einstein",
+});
+
 export const handleActivateHistoricalFigure = (
   id: string
 ): CommandHandlerOutput => {
@@ -339,7 +364,9 @@ export const handleDictionaryLookup = (
 ): CommandHandlerOutput => {
   const response = generateResponse(term);
   const related = findSimilarTerms(term);
+  const citations = getCitationsForTopic(term);
   const relatedStr = related.length > 0 ? "\n> Related terms: " + related.join(", ") : "";
+  const citationStr = citations.length > 0 ? "\n> Citations available: " + citations.length : "";
   
   return {
     message: `
@@ -347,6 +374,7 @@ export const handleDictionaryLookup = (
 > 
 > ${response}
 > ${relatedStr}
+> ${citationStr}
     `,
     showKnowledgePanel: true,
     showCodeEditor: false,
@@ -404,6 +432,8 @@ export const handleKnowledgeQueryResult = (
 > KNOWLEDGE QUERY RESULT
 > ${result}
 > The cosmic knowledge repository stands ready for further inquiries.
+> Use bookmarks to save important topics for future reference.
+> View citations for academic references on any topic.
   `,
 });
 
@@ -428,12 +458,41 @@ export const handleVisioNETResult = (
   `,
 });
 
+export const handleCitationResult = (
+  result: string
+): CommandHandlerOutput => ({
+  message: `
+> CITATION MANAGER RESULT
+> ${result}
+> The citation management system remains active.
+> You can export citations in APA, MLA, or Chicago format.
+  `,
+});
+
+export const handleBookmarkAction = (
+  action: "add" | "remove",
+  item: string
+): CommandHandlerOutput => ({
+  message: action === "add"
+    ? `
+> BOOKMARK ADDED
+> "${item}" has been added to your bookmarks.
+> Access all bookmarks through the Knowledge Repository.
+    `
+    : `
+> BOOKMARK REMOVED
+> "${item}" has been removed from your bookmarks.
+> Bookmark management system updated.
+    `,
+});
+
 export const handleIntelligentQuery = (
   query: string
 ): CommandHandlerOutput => {
   const response = generateResponse(query);
   const equations = getEquations(query);
   const relatedTerms = findSimilarTerms(query);
+  const citations = getCitationsForTopic(query);
   
   let equationsStr = "";
   if (equations.length > 0) {
@@ -445,14 +504,19 @@ export const handleIntelligentQuery = (
     relatedStr = "\n> Related concepts: " + relatedTerms.join(", ");
   }
   
+  let citationStr = "";
+  if (citations.length > 0) {
+    citationStr = "\n> Academic citations available. Open Citation Manager for details.";
+  }
+  
   return {
     message: `
 > INTELLIGENT QUERY PROCESSED
 > Query: "${query}"
 > 
-> ${response}${equationsStr}${relatedStr}
+> ${response}${equationsStr}${relatedStr}${citationStr}
 > 
-> The intelligence system remains active for further exploration.
+> The intelligence system has been enhanced with expanded knowledge.
     `,
   };
 };

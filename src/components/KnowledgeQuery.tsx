@@ -1,6 +1,6 @@
 
 import React, { useState, useEffect } from 'react';
-import { Search, Book, Brain, Sparkles, Info, Filter, Lightbulb, X, Calculator, BookText, Sigma } from 'lucide-react';
+import { Search, Book, Brain, Sparkles, Info, Filter, Lightbulb, X, Calculator, BookText, Sigma, Clock, BookmarkPlus, Bookmark, Citation, BookOpen } from 'lucide-react';
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
@@ -12,27 +12,19 @@ import {
   findSimilarTerms,
   getEquations,
   getCategoryInfo,
-  KnowledgeEntry
+  getAllCategories,
+  getLatestEntries,
+  getBookmarkableEntries,
+  getCitationsForTopic,
+  KnowledgeEntry,
+  Citation
 } from '@/services/knowledgeBaseService';
+import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@/components/ui/tooltip";
+import { useToast } from "@/hooks/use-toast";
 
 interface KnowledgeQueryProps {
   onQueryResult?: (result: string) => void;
 }
-
-const CATEGORIES = [
-  { id: "all", name: "All" },
-  { id: "physics", name: "Physics" },
-  { id: "philosophy", name: "Philosophy" },
-  { id: "spirituality", name: "Spirituality" },
-  { id: "mathematics", name: "Mathematics" },
-  { id: "technology", name: "Technology" },
-  { id: "biology", name: "Biology" },
-  { id: "psychology", name: "Psychology" },
-  { id: "history", name: "History" },
-  { id: "dictionary", name: "Dictionary" },
-  { id: "thesaurus", name: "Thesaurus" },
-  { id: "astronomy", name: "Astronomy" }
-];
 
 const KnowledgeQuery: React.FC<KnowledgeQueryProps> = ({ onQueryResult }) => {
   const [query, setQuery] = useState('');
@@ -47,14 +39,29 @@ const KnowledgeQuery: React.FC<KnowledgeQueryProps> = ({ onQueryResult }) => {
   const [relatedTerms, setRelatedTerms] = useState<string[]>([]);
   const [equations, setEquations] = useState<string[]>([]);
   const [categoryInfo, setCategoryInfo] = useState<{description: string, entries: number}>({description: "", entries: 0});
+  const [allCategories, setAllCategories] = useState<{id: string, name: string, count: number}[]>([]);
+  const [bookmarks, setBookmarks] = useState<string[]>([]);
+  const [viewMode, setViewMode] = useState<'standard' | 'citations' | 'bookmarks'>('standard');
+  const [latestEntries, setLatestEntries] = useState<KnowledgeEntry[]>([]);
+  const [citations, setCitations] = useState<Citation[]>([]);
+  
+  const { toast } = useToast();
 
   useEffect(() => {
     // Initialize with recommendations
     setRecommendations(getKnowledgeRecommendations());
+    setAllCategories(getAllCategories());
+    setLatestEntries(getLatestEntries());
     
     // Get category info
     if (selectedCategory !== "all") {
       setCategoryInfo(getCategoryInfo(selectedCategory));
+    }
+    
+    // Load bookmarks from localStorage
+    const savedBookmarks = localStorage.getItem('knowledgeBookmarks');
+    if (savedBookmarks) {
+      setBookmarks(JSON.parse(savedBookmarks));
     }
   }, [selectedCategory]);
 
@@ -77,11 +84,13 @@ const KnowledgeQuery: React.FC<KnowledgeQueryProps> = ({ onQueryResult }) => {
       const response = generateResponse(query);
       setResult(response);
       if (onQueryResult) onQueryResult(response);
-      setSearching(false);
       
       // Get related terms and equations
       setRelatedTerms(findSimilarTerms(query));
       setEquations(getEquations(query));
+      
+      // Get citations
+      setCitations(getCitationsForTopic(query));
       
       // Update recommendations based on the query
       setRecommendations(
@@ -89,6 +98,8 @@ const KnowledgeQuery: React.FC<KnowledgeQueryProps> = ({ onQueryResult }) => {
           selectedCategory !== "all" ? selectedCategory : undefined
         )
       );
+      
+      setSearching(false);
     }, 800);
   };
 
@@ -120,6 +131,7 @@ const KnowledgeQuery: React.FC<KnowledgeQueryProps> = ({ onQueryResult }) => {
     // Get related terms and equations
     setRelatedTerms(findSimilarTerms(key));
     setEquations(getEquations(key));
+    setCitations(getCitationsForTopic(key));
     
     // Add to recent queries
     if (!recentQueries.includes(key) && recentQueries.length < 5) {
@@ -142,6 +154,27 @@ const KnowledgeQuery: React.FC<KnowledgeQueryProps> = ({ onQueryResult }) => {
   const toggleEquations = () => {
     setShowEquations(!showEquations);
   };
+  
+  const toggleBookmark = (term: string) => {
+    let newBookmarks: string[];
+    
+    if (bookmarks.includes(term)) {
+      newBookmarks = bookmarks.filter(b => b !== term);
+      toast({
+        title: "Bookmark removed",
+        description: `'${term}' has been removed from your bookmarks.`,
+      });
+    } else {
+      newBookmarks = [...bookmarks, term];
+      toast({
+        title: "Bookmark added",
+        description: `'${term}' has been added to your bookmarks.`,
+      });
+    }
+    
+    setBookmarks(newBookmarks);
+    localStorage.setItem('knowledgeBookmarks', JSON.stringify(newBookmarks));
+  };
 
   const renderCategoryInfo = () => {
     if (selectedCategory === "all") return null;
@@ -152,6 +185,169 @@ const KnowledgeQuery: React.FC<KnowledgeQueryProps> = ({ onQueryResult }) => {
         <Badge variant="outline" className="text-[10px]">
           {categoryInfo.entries} entries
         </Badge>
+      </div>
+    );
+  };
+  
+  const renderBookmarkButton = (term: string) => {
+    const isBookmarked = bookmarks.includes(term);
+    
+    return (
+      <Button
+        variant="ghost"
+        size="sm"
+        onClick={(e) => {
+          e.stopPropagation();
+          toggleBookmark(term);
+        }}
+        className="p-0 h-5 w-5 hover:bg-transparent"
+        title={isBookmarked ? "Remove bookmark" : "Add bookmark"}
+      >
+        {isBookmarked ? (
+          <Bookmark className="h-3 w-3 text-amber-400" />
+        ) : (
+          <BookmarkPlus className="h-3 w-3 text-muted-foreground" />
+        )}
+      </Button>
+    );
+  };
+  
+  const renderViewModeControls = () => {
+    return (
+      <div className="flex gap-1 mb-2">
+        <Button
+          variant={viewMode === 'standard' ? "secondary" : "ghost"}
+          size="sm"
+          onClick={() => setViewMode('standard')}
+          className="text-xs px-2 h-7"
+        >
+          <Brain className="h-3 w-3 mr-1" />
+          Standard
+        </Button>
+        <Button
+          variant={viewMode === 'citations' ? "secondary" : "ghost"}
+          size="sm"
+          onClick={() => setViewMode('citations')}
+          className="text-xs px-2 h-7"
+        >
+          <Citation className="h-3 w-3 mr-1" />
+          Citations
+        </Button>
+        <Button
+          variant={viewMode === 'bookmarks' ? "secondary" : "ghost"}
+          size="sm"
+          onClick={() => setViewMode('bookmarks')}
+          className="text-xs px-2 h-7"
+        >
+          <Bookmark className="h-3 w-3 mr-1" />
+          Bookmarks
+        </Button>
+      </div>
+    );
+  };
+  
+  const renderBookmarksView = () => {
+    if (bookmarks.length === 0) {
+      return (
+        <div className="p-4 text-center text-muted-foreground">
+          <Bookmark className="h-8 w-8 mx-auto mb-2 opacity-30" />
+          <p className="text-xs">You haven't bookmarked any knowledge entries yet.</p>
+          <p className="text-xs mt-1">Use the bookmark icon to save important topics for quick access.</p>
+        </div>
+      );
+    }
+    
+    return (
+      <div className="grid grid-cols-1 gap-1">
+        {bookmarks.map((term, idx) => (
+          <div 
+            key={idx}
+            className="text-xs p-2 rounded bg-black/10 hover:bg-crimson/20 cursor-pointer flex items-center"
+            onClick={() => handleRecommendationClick(term)}
+          >
+            <BookOpen className="h-3 w-3 mr-2 text-amber-400" />
+            {term}
+            <Button
+              variant="ghost"
+              size="sm"
+              onClick={(e) => {
+                e.stopPropagation();
+                toggleBookmark(term);
+              }}
+              className="p-0 h-5 w-5 ml-auto hover:bg-transparent"
+            >
+              <X className="h-3 w-3 text-muted-foreground" />
+            </Button>
+          </div>
+        ))}
+      </div>
+    );
+  };
+  
+  const renderCitationsView = () => {
+    if (citations.length === 0) {
+      return (
+        <div className="p-4 text-center text-muted-foreground">
+          <Citation className="h-8 w-8 mx-auto mb-2 opacity-30" />
+          <p className="text-xs">No citations available for the current query.</p>
+          <p className="text-xs mt-1">Search for a topic to view related academic citations.</p>
+        </div>
+      );
+    }
+    
+    return (
+      <div className="space-y-2 p-2">
+        <h4 className="text-xs font-medium">Citations for "{query}"</h4>
+        {citations.map((citation, idx) => (
+          <div key={idx} className="text-xs p-2 rounded bg-black/10">
+            <p className="font-medium">{citation.title}</p>
+            <p className="text-muted-foreground">{citation.author} ({citation.year})</p>
+            {citation.publication && (
+              <p className="italic text-muted-foreground">{citation.publication}</p>
+            )}
+            {citation.url && (
+              <a 
+                href={citation.url} 
+                target="_blank" 
+                rel="noreferrer"
+                className="text-crimson hover:underline text-[10px] block mt-1"
+              >
+                View Source
+              </a>
+            )}
+          </div>
+        ))}
+      </div>
+    );
+  };
+  
+  const renderLatestEntries = () => {
+    return (
+      <div className="mt-2">
+        <div className="flex items-center justify-between mb-1">
+          <h4 className="text-xs font-medium flex items-center">
+            <Clock className="h-3 w-3 mr-1 text-blue-400" />
+            Latest Additions
+          </h4>
+        </div>
+        <div className="grid grid-cols-1 gap-1">
+          {latestEntries.map((entry, idx) => (
+            <div 
+              key={idx} 
+              className="text-xs p-2 rounded bg-black/10 hover:bg-blue-500/10 cursor-pointer flex items-center"
+              onClick={() => handleRecommendationClick(entry.key[0])}
+            >
+              <Info className="h-3 w-3 mr-2 text-blue-400" />
+              {entry.key[0]}
+              <Badge 
+                variant="outline" 
+                className="ml-auto text-[10px] h-4 px-1"
+              >
+                New
+              </Badge>
+            </div>
+          ))}
+        </div>
       </div>
     );
   };
@@ -256,6 +452,11 @@ const KnowledgeQuery: React.FC<KnowledgeQueryProps> = ({ onQueryResult }) => {
       
       {result && (
         <div className="mt-3 text-sm p-3 rounded bg-black/20 text-muted-foreground animate-fade-in overflow-y-auto max-h-56">
+          <div className="flex items-center justify-between mb-1">
+            <h4 className="text-xs font-medium">Results for "{query}"</h4>
+            {renderBookmarkButton(query)}
+          </div>
+          
           {result}
           
           {equations.length > 0 && (
@@ -300,80 +501,121 @@ const KnowledgeQuery: React.FC<KnowledgeQueryProps> = ({ onQueryResult }) => {
         </div>
       )}
       
-      <div className="mt-4">
-        <div className="flex justify-between items-center mb-2">
-          <h4 className="text-xs font-medium flex items-center">
-            <Sparkles className="h-3 w-3 mr-1 text-crimson" />
-            Knowledge Categories
-          </h4>
-          <div className="flex gap-1">
-            <Badge 
-              variant="outline" 
-              className="cursor-pointer text-[10px] px-1 h-5"
-              onClick={() => setSelectedCategory("dictionary")}
-            >
-              <BookText className="h-3 w-3 mr-1" />
-              Dictionary
-            </Badge>
-            <Badge 
-              variant="outline" 
-              className="cursor-pointer text-[10px] px-1 h-5"
-              onClick={() => setSelectedCategory("mathematics")}
-            >
-              <Sigma className="h-3 w-3 mr-1" />
-              Math
-            </Badge>
-          </div>
-        </div>
-        
-        {renderCategoryInfo()}
-        
-        <div className="overflow-x-auto pb-1">
-          <Tabs defaultValue="all" className="w-full">
-            <TabsList className="inline-flex h-8 min-w-full">
-              {CATEGORIES.map(category => (
-                <TabsTrigger 
-                  key={category.id}
-                  value={category.id} 
-                  className="text-xs whitespace-nowrap"
-                  onClick={() => handleCategorySelect(category.id)}
+      {renderViewModeControls()}
+      
+      {viewMode === 'bookmarks' ? (
+        renderBookmarksView()
+      ) : viewMode === 'citations' ? (
+        renderCitationsView()
+      ) : (
+        <>
+          <div>
+            <div className="flex justify-between items-center mb-2">
+              <h4 className="text-xs font-medium flex items-center">
+                <Sparkles className="h-3 w-3 mr-1 text-crimson" />
+                Knowledge Categories
+              </h4>
+              <div className="flex gap-1">
+                <Badge 
+                  variant="outline" 
+                  className="cursor-pointer text-[10px] px-1 h-5"
+                  onClick={() => setSelectedCategory("dictionary")}
                 >
-                  {category.name}
-                </TabsTrigger>
-              ))}
-            </TabsList>
+                  <BookText className="h-3 w-3 mr-1" />
+                  Dictionary
+                </Badge>
+                <Badge 
+                  variant="outline" 
+                  className="cursor-pointer text-[10px] px-1 h-5"
+                  onClick={() => setSelectedCategory("mathematics")}
+                >
+                  <Sigma className="h-3 w-3 mr-1" />
+                  Math
+                </Badge>
+              </div>
+            </div>
             
-            {CATEGORIES.map(category => (
-              <TabsContent key={category.id} value={category.id} className="mt-2">
-                <div className="grid grid-cols-1 gap-1">
-                  {recommendations.map((rec, index) => (
-                    <div 
-                      key={index}
-                      className="text-xs p-2 rounded bg-black/10 hover:bg-crimson/20 cursor-pointer flex items-center"
-                      onClick={() => handleRecommendationClick(rec.key[0])}
+            {renderCategoryInfo()}
+            
+            <div className="overflow-x-auto pb-1">
+              <Tabs defaultValue="all" className="w-full">
+                <TabsList className="inline-flex h-8 min-w-full">
+                  <TabsTrigger 
+                    key="all"
+                    value="all" 
+                    className="text-xs whitespace-nowrap"
+                    onClick={() => handleCategorySelect("all")}
+                  >
+                    All
+                  </TabsTrigger>
+                  {allCategories.map(category => (
+                    <TabsTrigger 
+                      key={category.id}
+                      value={category.id} 
+                      className="text-xs whitespace-nowrap"
+                      onClick={() => handleCategorySelect(category.id)}
                     >
-                      <Info className="h-3 w-3 mr-2 text-crimson" />
-                      {rec.key[0]}
-                      {rec.category && (
-                        <Badge 
-                          variant="outline" 
-                          className="ml-auto text-[10px] h-4 px-1"
-                          onClick={(e) => {
-                            e.stopPropagation();
-                            addFilter(rec.category);
-                          }}
-                        >
-                          {rec.category}
-                        </Badge>
-                      )}
-                    </div>
+                      {category.name} ({category.count})
+                    </TabsTrigger>
                   ))}
-                </div>
-              </TabsContent>
-            ))}
-          </Tabs>
-        </div>
-      </div>
+                </TabsList>
+                
+                <TabsContent value="all" className="mt-2">
+                  <div className="grid grid-cols-1 gap-1">
+                    {recommendations.map((rec, index) => (
+                      <div 
+                        key={index}
+                        className="text-xs p-2 rounded bg-black/10 hover:bg-crimson/20 cursor-pointer flex items-center"
+                        onClick={() => handleRecommendationClick(rec.key[0])}
+                      >
+                        <Info className="h-3 w-3 mr-2 text-crimson" />
+                        {rec.key[0]}
+                        <div className="ml-auto flex items-center gap-1">
+                          {renderBookmarkButton(rec.key[0])}
+                          {rec.category && (
+                            <Badge 
+                              variant="outline" 
+                              className="text-[10px] h-4 px-1"
+                              onClick={(e) => {
+                                e.stopPropagation();
+                                addFilter(rec.category);
+                              }}
+                            >
+                              {rec.category}
+                            </Badge>
+                          )}
+                        </div>
+                      </div>
+                    ))}
+                  </div>
+                  
+                  {renderLatestEntries()}
+                </TabsContent>
+                
+                {allCategories.map(category => (
+                  <TabsContent key={category.id} value={category.id} className="mt-2">
+                    <div className="grid grid-cols-1 gap-1">
+                      {recommendations.map((rec, index) => (
+                        <div 
+                          key={index}
+                          className="text-xs p-2 rounded bg-black/10 hover:bg-crimson/20 cursor-pointer flex items-center"
+                          onClick={() => handleRecommendationClick(rec.key[0])}
+                        >
+                          <Info className="h-3 w-3 mr-2 text-crimson" />
+                          {rec.key[0]}
+                          <div className="ml-auto flex items-center gap-1">
+                            {renderBookmarkButton(rec.key[0])}
+                          </div>
+                        </div>
+                      ))}
+                    </div>
+                  </TabsContent>
+                ))}
+              </Tabs>
+            </div>
+          </div>
+        </>
+      )}
     </div>
   );
 };
