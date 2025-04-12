@@ -1,10 +1,9 @@
-
 import React, { useState, useEffect } from 'react';
 import { Citation } from "@/services/knowledgeBaseService";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
-import { Citation as CitationIcon, Copy, Download, Search, Filter, X, BookOpen, ExternalLink } from 'lucide-react';
+import { BookOpen, Copy, Download, Search, Filter, X, ExternalLink } from 'lucide-react';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { useToast } from "@/hooks/use-toast";
 
@@ -26,7 +25,6 @@ const CitationManager: React.FC<CitationManagerProps> = ({ initialCitations = []
     setCitations(initialCitations);
   }, [initialCitations]);
   
-  // Filter citations based on search term and filter type
   const filteredCitations = citations.filter(citation => {
     const searchLower = searchTerm.toLowerCase();
     
@@ -48,7 +46,6 @@ const CitationManager: React.FC<CitationManagerProps> = ({ initialCitations = []
     }
   });
   
-  // Format citation according to selected style
   const formatCitation = (citation: Citation, format: 'apa' | 'mla' | 'chicago'): string => {
     const { author, title, publication, year, url } = citation;
     
@@ -67,7 +64,6 @@ const CitationManager: React.FC<CitationManagerProps> = ({ initialCitations = []
     }
   };
   
-  // Copy citation to clipboard
   const handleCopyCitation = (citation: Citation) => {
     const formattedCitation = formatCitation(citation, citationFormat);
     navigator.clipboard.writeText(formattedCitation);
@@ -78,14 +74,12 @@ const CitationManager: React.FC<CitationManagerProps> = ({ initialCitations = []
     });
   };
   
-  // Generate citation list as plain text
   const generateCitationList = () => {
     return filteredCitations
       .map(citation => formatCitation(citation, citationFormat))
       .join('\n\n');
   };
   
-  // Download citations as text file
   const handleDownloadCitations = () => {
     const citationText = generateCitationList();
     const blob = new Blob([citationText], { type: 'text/plain' });
@@ -107,7 +101,7 @@ const CitationManager: React.FC<CitationManagerProps> = ({ initialCitations = []
   return (
     <div className="w-full max-w-md p-4 bg-muted/20 backdrop-blur-sm rounded-lg">
       <div className="flex items-center mb-3">
-        <CitationIcon className="h-5 w-5 mr-2 text-muted-foreground" />
+        <BookOpen className="h-5 w-5 mr-2 text-muted-foreground" />
         <h3 className="text-sm font-medium">Citation Manager</h3>
       </div>
       
@@ -215,7 +209,7 @@ const CitationManager: React.FC<CitationManagerProps> = ({ initialCitations = []
                 ))
               ) : (
                 <div className="text-center p-4 text-muted-foreground">
-                  <CitationIcon className="h-8 w-8 mx-auto mb-2 opacity-30" />
+                  <BookOpen className="h-8 w-8 mx-auto mb-2 opacity-30" />
                   <p className="text-xs">No citations match your search.</p>
                 </div>
               )}

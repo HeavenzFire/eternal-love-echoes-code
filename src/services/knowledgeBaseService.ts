@@ -1,4 +1,3 @@
-
 export interface KnowledgeEntry {
   id: string;
   key: string[];
@@ -21,8 +20,18 @@ export interface Citation {
   url?: string;
 }
 
+export interface HistoricalFigure {
+  id: string;
+  name: string;
+  era: string;
+  field: string;
+  contribution: string;
+  quote: string;
+  keywords: string[];
+}
+
 // This is a much larger knowledge base than the previous one
-export const COMPREHENSIVE_KNOWLEDGE_BASE: KnowledgeEntry[] = [
+export const COMPREHENSIVE_KNOWLEDGE_BASE: (KnowledgeEntry | HistoricalFigure)[] = [
   // Physics & Astronomy
   { 
     id: "physics-blackhole",
@@ -168,7 +177,7 @@ export const COMPREHENSIVE_KNOWLEDGE_BASE: KnowledgeEntry[] = [
     contribution: "Founder of Taoism; authored the Tao Te Ching; taught principles of simplicity, harmony with nature, and the concept of wu wei (non-action).",
     quote: "Nature does not hurry, yet everything is accomplished.",
     keywords: ["taoism", "harmony", "balance", "simplicity", "wu wei"]
-  },
+  } as HistoricalFigure,
   {
     id: "hypatia",
     name: "Hypatia of Alexandria",
@@ -365,82 +374,84 @@ export function searchKnowledgeBase(query: string, topResults: number = 3, categ
   if (queryWords.length === 0) return [];
   
   // Calculate relevance score for each entry
-  const scoredEntries = COMPREHENSIVE_KNOWLEDGE_BASE.map(entry => {
-    let score = 0;
-    
-    // Filter by category if provided
-    if (category && entry.category !== category) {
-      return { entry, score: 0 };
-    }
-    
-    // Check for exact key matches
-    const hasExactKeyMatch = entry.key.some(k => 
-      k.toLowerCase() === lowerQuery || 
-      lowerQuery.includes(k.toLowerCase())
-    );
-    
-    if (hasExactKeyMatch) {
-      score += 100; // High score for exact matches
-    }
-    
-    // Check for partial matches in keys
-    queryWords.forEach(word => {
-      entry.key.forEach(key => {
-        if (key.toLowerCase().includes(word)) {
-          score += 10;
-        }
-      });
-    });
-    
-    // Check for matches in value
-    queryWords.forEach(word => {
-      if (entry.value.toLowerCase().includes(word)) {
-        score += 5;
+  const scoredEntries = COMPREHENSIVE_KNOWLEDGE_BASE
+    .filter((entry): entry is KnowledgeEntry => 'key' in entry) // Filter to only include KnowledgeEntry types
+    .map(entry => {
+      let score = 0;
+      
+      // Filter by category if provided
+      if (category && entry.category !== category) {
+        return { entry, score: 0 };
       }
-    });
-    
-    // Add importance factor
-    score += entry.importance;
-    
-    // Check for category match
-    if (entry.category.toLowerCase().includes(lowerQuery) || 
-        queryWords.some(word => entry.category.toLowerCase().includes(word))) {
-      score += 8;
-    }
-    
-    // Check for tag matches
-    if (entry.tags) {
+      
+      // Check for exact key matches
+      const hasExactKeyMatch = entry.key.some(k => 
+        k.toLowerCase() === lowerQuery || 
+        lowerQuery.includes(k.toLowerCase())
+      );
+      
+      if (hasExactKeyMatch) {
+        score += 100; // High score for exact matches
+      }
+      
+      // Check for partial matches in keys
       queryWords.forEach(word => {
-        if (entry.tags?.some(tag => tag.toLowerCase().includes(word))) {
-          score += 7;
-        }
+        entry.key.forEach(key => {
+          if (key.toLowerCase().includes(word)) {
+            score += 10;
+          }
+        });
       });
-    }
-    
-    // Check for related terms matches
-    if (entry.related) {
+      
+      // Check for matches in value
       queryWords.forEach(word => {
-        if (entry.related?.some(related => related.toLowerCase().includes(word))) {
-          score += 6;
-        }
-      });
-    }
-    
-    // Check for citations (new)
-    if (entry.citations) {
-      queryWords.forEach(word => {
-        if (entry.citations?.some(
-          citation => 
-            citation.author.toLowerCase().includes(word) || 
-            citation.title.toLowerCase().includes(word)
-        )) {
+        if (entry.value.toLowerCase().includes(word)) {
           score += 5;
         }
       });
-    }
-    
-    return { entry, score };
-  });
+      
+      // Add importance factor
+      score += entry.importance;
+      
+      // Check for category match
+      if (entry.category.toLowerCase().includes(lowerQuery) || 
+          queryWords.some(word => entry.category.toLowerCase().includes(word))) {
+        score += 8;
+      }
+      
+      // Check for tag matches
+      if (entry.tags) {
+        queryWords.forEach(word => {
+          if (entry.tags?.some(tag => tag.toLowerCase().includes(word))) {
+            score += 7;
+          }
+        });
+      }
+      
+      // Check for related terms matches
+      if (entry.related) {
+        queryWords.forEach(word => {
+          if (entry.related?.some(related => related.toLowerCase().includes(word))) {
+            score += 6;
+          }
+        });
+      }
+      
+      // Check for citations (new)
+      if (entry.citations) {
+        queryWords.forEach(word => {
+          if (entry.citations?.some(
+            citation => 
+              citation.author.toLowerCase().includes(word) || 
+              citation.title.toLowerCase().includes(word)
+          )) {
+            score += 5;
+          }
+        });
+      }
+      
+      return { entry, score };
+    });
   
   // Sort by score and return top results
   return scoredEntries
@@ -595,8 +606,6 @@ export function getCategoryInfo(category: string): { description: string, entrie
   };
 }
 
-// New functions below
-
 export function getAllCategories(): { id: string, name: string, count: number }[] {
   const categoryCounts: Record<string, number> = {};
   const categoryNames: Record<string, string> = {
@@ -642,7 +651,7 @@ export function getBookmarkableEntries(): KnowledgeEntry[] {
 
 export function getLatestEntries(count: number = 5): KnowledgeEntry[] {
   return [...COMPREHENSIVE_KNOWLEDGE_BASE]
-    .filter(entry => entry.dateAdded)
+    .filter((entry): entry is KnowledgeEntry => 'dateAdded' in entry && entry.dateAdded !== undefined)
     .sort((a, b) => {
       if (!a.dateAdded || !b.dateAdded) return 0;
       return new Date(b.dateAdded).getTime() - new Date(a.dateAdded).getTime();
@@ -650,12 +659,13 @@ export function getLatestEntries(count: number = 5): KnowledgeEntry[] {
     .slice(0, count);
 }
 
-// Add the missing getCitationsForTopic function that's referenced in KnowledgeQuery.tsx
 export function getCitationsForTopic(topic: string): Citation[] {
   const entries = COMPREHENSIVE_KNOWLEDGE_BASE
-    .filter(entry => 
+    .filter((entry): entry is KnowledgeEntry => 
+      'key' in entry && 
+      'citations' in entry &&
       entry.key.some(k => k.toLowerCase().includes(topic.toLowerCase())) && 
-      entry.citations
+      entry.citations !== undefined
     );
   
   if (entries.length > 0 && entries[0].citations) {

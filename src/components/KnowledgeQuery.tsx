@@ -1,6 +1,5 @@
-
 import React, { useState, useEffect } from 'react';
-import { Search, Book, Brain, Sparkles, Info, Filter, Lightbulb, X, Calculator, BookText, Sigma, Clock, BookmarkPlus, Bookmark, Citation, BookOpen } from 'lucide-react';
+import { Search, Book, Brain, Sparkles, Info, Filter, Lightbulb, X, Calculator, BookText, Sigma, Clock, BookmarkPlus, Bookmark, BookOpen } from 'lucide-react';
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
@@ -48,17 +47,14 @@ const KnowledgeQuery: React.FC<KnowledgeQueryProps> = ({ onQueryResult }) => {
   const { toast } = useToast();
 
   useEffect(() => {
-    // Initialize with recommendations
     setRecommendations(getKnowledgeRecommendations());
     setAllCategories(getAllCategories());
     setLatestEntries(getLatestEntries());
     
-    // Get category info
     if (selectedCategory !== "all") {
       setCategoryInfo(getCategoryInfo(selectedCategory));
     }
     
-    // Load bookmarks from localStorage
     const savedBookmarks = localStorage.getItem('knowledgeBookmarks');
     if (savedBookmarks) {
       setBookmarks(JSON.parse(savedBookmarks));
@@ -72,27 +68,22 @@ const KnowledgeQuery: React.FC<KnowledgeQueryProps> = ({ onQueryResult }) => {
     setResult(null);
     setShowSuggestions(false);
 
-    // Add to recent queries if not already present
     if (!recentQueries.includes(query) && recentQueries.length < 5) {
       setRecentQueries([...recentQueries, query]);
     } else if (!recentQueries.includes(query)) {
       setRecentQueries([...recentQueries.slice(1), query]);
     }
 
-    // Process query with slight delay to show animation
     setTimeout(() => {
       const response = generateResponse(query);
       setResult(response);
       if (onQueryResult) onQueryResult(response);
       
-      // Get related terms and equations
       setRelatedTerms(findSimilarTerms(query));
       setEquations(getEquations(query));
       
-      // Get citations
       setCitations(getCitationsForTopic(query));
       
-      // Update recommendations based on the query
       setRecommendations(
         getKnowledgeRecommendations(
           selectedCategory !== "all" ? selectedCategory : undefined
@@ -128,12 +119,10 @@ const KnowledgeQuery: React.FC<KnowledgeQueryProps> = ({ onQueryResult }) => {
     setResult(response);
     if (onQueryResult) onQueryResult(response);
     
-    // Get related terms and equations
     setRelatedTerms(findSimilarTerms(key));
     setEquations(getEquations(key));
     setCitations(getCitationsForTopic(key));
     
-    // Add to recent queries
     if (!recentQueries.includes(key) && recentQueries.length < 5) {
       setRecentQueries([...recentQueries, key]);
     } else if (!recentQueries.includes(key)) {
