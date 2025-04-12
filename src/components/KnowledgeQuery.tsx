@@ -219,7 +219,7 @@ const KnowledgeQuery: React.FC<KnowledgeQueryProps> = ({ onQueryResult }) => {
           onClick={() => setViewMode('citations')}
           className="text-xs px-2 h-7"
         >
-          <Citation className="h-3 w-3 mr-1" />
+          <BookOpen className="h-3 w-3 mr-1" />
           Citations
         </Button>
         <Button
@@ -277,7 +277,7 @@ const KnowledgeQuery: React.FC<KnowledgeQueryProps> = ({ onQueryResult }) => {
     if (citations.length === 0) {
       return (
         <div className="p-4 text-center text-muted-foreground">
-          <Citation className="h-8 w-8 mx-auto mb-2 opacity-30" />
+          <BookOpen className="h-8 w-8 mx-auto mb-2 opacity-30" />
           <p className="text-xs">No citations available for the current query.</p>
           <p className="text-xs mt-1">Search for a topic to view related academic citations.</p>
         </div>

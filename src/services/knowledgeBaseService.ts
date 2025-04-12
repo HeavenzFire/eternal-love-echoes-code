@@ -1,3 +1,4 @@
+
 export interface KnowledgeEntry {
   id: string;
   key: string[];
@@ -462,22 +463,26 @@ export function searchKnowledgeBase(query: string, topResults: number = 3, categ
 }
 
 export function getKnowledgeRecommendations(category?: string): KnowledgeEntry[] {
+  const knowledgeEntries = COMPREHENSIVE_KNOWLEDGE_BASE.filter((entry): entry is KnowledgeEntry => 'key' in entry);
+  
   if (category) {
-    return COMPREHENSIVE_KNOWLEDGE_BASE
+    return knowledgeEntries
       .filter(entry => entry.category === category)
       .sort((a, b) => b.importance - a.importance)
       .slice(0, 3);
   }
   
   // Return top entries by importance
-  return COMPREHENSIVE_KNOWLEDGE_BASE
+  return knowledgeEntries
     .sort((a, b) => b.importance - a.importance)
     .slice(0, 3);
 }
 
 export function findSimilarTerms(term: string, count: number = 5): string[] {
   // Find thesaurus entries that match the term
-  const thesaurusEntries = COMPREHENSIVE_KNOWLEDGE_BASE
+  const knowledgeEntries = COMPREHENSIVE_KNOWLEDGE_BASE.filter((entry): entry is KnowledgeEntry => 'key' in entry);
+  
+  const thesaurusEntries = knowledgeEntries
     .filter(entry => 
       entry.category === 'thesaurus' && 
       entry.key.some(k => k.toLowerCase().includes(term.toLowerCase()))
@@ -488,7 +493,7 @@ export function findSimilarTerms(term: string, count: number = 5): string[] {
   }
   
   // If no thesaurus entry found, look for related terms in other entries
-  const relatedEntries = COMPREHENSIVE_KNOWLEDGE_BASE
+  const relatedEntries = knowledgeEntries
     .filter(entry => 
       entry.key.some(k => k.toLowerCase().includes(term.toLowerCase())) && 
       entry.related
@@ -502,7 +507,9 @@ export function findSimilarTerms(term: string, count: number = 5): string[] {
 }
 
 export function getEquations(topic: string): string[] {
-  const entries = COMPREHENSIVE_KNOWLEDGE_BASE
+  const knowledgeEntries = COMPREHENSIVE_KNOWLEDGE_BASE.filter((entry): entry is KnowledgeEntry => 'key' in entry);
+  
+  const entries = knowledgeEntries
     .filter(entry => 
       entry.key.some(k => k.toLowerCase().includes(topic.toLowerCase())) && 
       entry.equations
@@ -594,10 +601,12 @@ export function getCategoryInfo(category: string): { description: string, entrie
   
   // Count entries by category
   COMPREHENSIVE_KNOWLEDGE_BASE.forEach(entry => {
-    if (!categoryCounts[entry.category]) {
-      categoryCounts[entry.category] = 0;
+    if ('category' in entry) {
+      if (!categoryCounts[entry.category]) {
+        categoryCounts[entry.category] = 0;
+      }
+      categoryCounts[entry.category]++;
     }
-    categoryCounts[entry.category]++;
   });
   
   return {
@@ -628,10 +637,12 @@ export function getAllCategories(): { id: string, name: string, count: number }[
   
   // Count entries by category
   COMPREHENSIVE_KNOWLEDGE_BASE.forEach(entry => {
-    if (!categoryCounts[entry.category]) {
-      categoryCounts[entry.category] = 0;
+    if ('category' in entry) {
+      if (!categoryCounts[entry.category]) {
+        categoryCounts[entry.category] = 0;
+      }
+      categoryCounts[entry.category]++;
     }
-    categoryCounts[entry.category]++;
   });
   
   // Convert to array format
@@ -643,15 +654,18 @@ export function getAllCategories(): { id: string, name: string, count: number }[
 }
 
 export function getBookmarkableEntries(): KnowledgeEntry[] {
-  return COMPREHENSIVE_KNOWLEDGE_BASE
+  const knowledgeEntries = COMPREHENSIVE_KNOWLEDGE_BASE.filter((entry): entry is KnowledgeEntry => 'key' in entry);
+  
+  return knowledgeEntries
     .filter(entry => entry.importance >= 8)
     .sort((a, b) => b.importance - a.importance)
     .slice(0, 10);
 }
 
 export function getLatestEntries(count: number = 5): KnowledgeEntry[] {
-  return [...COMPREHENSIVE_KNOWLEDGE_BASE]
-    .filter((entry): entry is KnowledgeEntry => 'dateAdded' in entry && entry.dateAdded !== undefined)
+  const knowledgeEntries = COMPREHENSIVE_KNOWLEDGE_BASE.filter((entry): entry is KnowledgeEntry => 'key' in entry && entry.dateAdded !== undefined);
+  
+  return [...knowledgeEntries]
     .sort((a, b) => {
       if (!a.dateAdded || !b.dateAdded) return 0;
       return new Date(b.dateAdded).getTime() - new Date(a.dateAdded).getTime();
@@ -660,16 +674,15 @@ export function getLatestEntries(count: number = 5): KnowledgeEntry[] {
 }
 
 export function getCitationsForTopic(topic: string): Citation[] {
-  const entries = COMPREHENSIVE_KNOWLEDGE_BASE
-    .filter((entry): entry is KnowledgeEntry => 
-      'key' in entry && 
-      'citations' in entry &&
-      entry.key.some(k => k.toLowerCase().includes(topic.toLowerCase())) && 
-      entry.citations !== undefined
-    );
+  const knowledgeEntries = COMPREHENSIVE_KNOWLEDGE_BASE.filter((entry): entry is KnowledgeEntry => 
+    'key' in entry && 
+    'citations' in entry &&
+    entry.key.some(k => k.toLowerCase().includes(topic.toLowerCase())) && 
+    entry.citations !== undefined
+  );
   
-  if (entries.length > 0 && entries[0].citations) {
-    return entries[0].citations;
+  if (knowledgeEntries.length > 0 && knowledgeEntries[0].citations) {
+    return knowledgeEntries[0].citations;
   }
   
   return [];
