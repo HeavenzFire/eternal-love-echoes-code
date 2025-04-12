@@ -1,3 +1,4 @@
+
 export interface KnowledgeEntry {
   id: string;
   key: string[];
@@ -646,4 +647,20 @@ export function getLatestEntries(count: number = 5): KnowledgeEntry[] {
       if (!a.dateAdded || !b.dateAdded) return 0;
       return new Date(b.dateAdded).getTime() - new Date(a.dateAdded).getTime();
     })
-    .slice(
+    .slice(0, count);
+}
+
+// Add the missing getCitationsForTopic function that's referenced in KnowledgeQuery.tsx
+export function getCitationsForTopic(topic: string): Citation[] {
+  const entries = COMPREHENSIVE_KNOWLEDGE_BASE
+    .filter(entry => 
+      entry.key.some(k => k.toLowerCase().includes(topic.toLowerCase())) && 
+      entry.citations
+    );
+  
+  if (entries.length > 0 && entries[0].citations) {
+    return entries[0].citations;
+  }
+  
+  return [];
+}
