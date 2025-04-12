@@ -1,4 +1,3 @@
-
 import React, { useState } from 'react';
 import { Button } from '@/components/ui/button';
 import { Label } from '@/components/ui/label';
@@ -272,7 +271,7 @@ const StimulusControls: React.FC<StimulusControlsProps> = ({
       </Button>
       
       {isHighIntensity && (
-        <Alert variant="warning" className="p-2">
+        <Alert variant="default" className="p-2">
           <AlertCircle className="h-4 w-4" />
           <AlertDescription className="text-xs ml-2">
             High-intensity stimulus may cause unexpected physiological responses.

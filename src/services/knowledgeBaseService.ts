@@ -1,4 +1,3 @@
-
 export interface KnowledgeEntry {
   id: string;
   key: string[];
@@ -365,7 +364,115 @@ export const COMPREHENSIVE_KNOWLEDGE_BASE: (KnowledgeEntry | HistoricalFigure)[]
       { author: "Janeway, C.A. Jr et al.", title: "Immunobiology: The Immune System in Health and Disease", year: "2001" }
     ],
     dateAdded: "2025-03-22"
-  }
+  },
+  // Art and Literature
+  { 
+    id: "art-renaissance",
+    key: ["renaissance art", "renaissance", "italian renaissance"],
+    value: "Renaissance art emerged in Italy in the late 14th century and reached its peak in the late 15th and early 16th centuries. It marked a revival of Classical learning and values, focusing on humanism, perspective, anatomical correctness, and realism. Key figures include Leonardo da Vinci, Michelangelo, and Raphael.",
+    category: "art",
+    source: "Art history scholarship, Vasari's 'Lives of the Artists'",
+    tags: ["art", "history", "italy", "humanism"],
+    importance: 9,
+    related: ["humanism", "perspective", "sfumato", "chiaroscuro", "contrapposto"],
+    citations: [
+      { author: "Vasari, G.", title: "Lives of the Most Excellent Painters, Sculptors, and Architects", year: "1550" }
+    ],
+    dateAdded: "2025-04-10"
+  },
+  { 
+    id: "literature-modernism",
+    key: ["literary modernism", "modernist literature", "modernism"],
+    value: "Literary modernism is a literary movement that emerged in the late 19th and early 20th centuries, characterized by a self-conscious break with traditional forms and a focus on individual subjectivity. Modernist writers experimented with literary form and expression, emphasizing stream of consciousness, fragmentation, and non-linear narratives.",
+    category: "literature",
+    source: "Literary scholarship, modernist texts",
+    tags: ["literature", "writing", "20th century", "experimentation"],
+    importance: 8,
+    related: ["stream of consciousness", "fragmentation", "unreliable narrator", "symbolism", "free verse"],
+    citations: [
+      { author: "Bradbury, M. & McFarlane, J.", title: "Modernism: A Guide to European Literature 1890-1930", year: "1978" }
+    ],
+    dateAdded: "2025-04-09"
+  },
+
+  // Economics entries
+  { 
+    id: "economics-game-theory",
+    key: ["game theory", "strategic decision making", "prisoner's dilemma"],
+    value: "Game theory is the study of mathematical models of strategic interaction among rational decision-makers. It has applications in economics, political science, psychology, and biology. Key concepts include Nash equilibrium, dominant strategies, and the prisoner's dilemma.",
+    category: "economics",
+    source: "Works of von Neumann, Nash, Morgenstern",
+    tags: ["economics", "mathematics", "strategy", "decision making"],
+    importance: 9,
+    equations: ["u(s) = Σ p(s₁)u₁(s₁)", "maximin v = maxi minj aij"],
+    related: ["nash equilibrium", "prisoner's dilemma", "zero-sum game", "cooperative game", "evolutionary game theory"],
+    citations: [
+      { author: "von Neumann, J. & Morgenstern, O.", title: "Theory of Games and Economic Behavior", year: "1944" },
+      { author: "Nash, J.", title: "Equilibrium Points in n-Person Games", publication: "Proceedings of the National Academy of Sciences", year: "1950" }
+    ],
+    dateAdded: "2025-04-08"
+  },
+  { 
+    id: "economics-behavioral",
+    key: ["behavioral economics", "economic psychology", "cognitive biases in economics"],
+    value: "Behavioral economics studies the effects of psychological, cognitive, emotional, cultural and social factors on economic decisions. It challenges the assumption that humans are perfectly rational economic agents and incorporates insights from psychology to explain economic behavior.",
+    category: "economics",
+    source: "Works of Kahneman, Thaler, Tversky",
+    tags: ["economics", "psychology", "decision making", "biases"],
+    importance: 8,
+    related: ["prospect theory", "bounded rationality", "nudge theory", "mental accounting", "heuristics"],
+    citations: [
+      { author: "Kahneman, D. & Tversky, A.", title: "Prospect Theory: An Analysis of Decision under Risk", publication: "Econometrica", year: "1979" },
+      { author: "Thaler, R.", title: "Nudge: Improving Decisions About Health, Wealth, and Happiness", year: "2008" }
+    ],
+    dateAdded: "2025-04-07"
+  },
+
+  // Environmental Science
+  { 
+    id: "environmental-climate-change",
+    key: ["climate change", "global warming", "greenhouse effect"],
+    value: "Climate change refers to significant changes in global temperature, precipitation, wind patterns, and other measures of climate that occur over several decades or longer. It's primarily caused by human activities, especially the burning of fossil fuels, which increases heat-trapping greenhouse gas levels in Earth's atmosphere.",
+    category: "environmental science",
+    source: "IPCC reports, climate research",
+    tags: ["climate", "environment", "global warming", "earth science"],
+    importance: 10,
+    equations: ["ΔF = 5.35 × ln(C/C₀)", "ΔT = λ × ΔF"],
+    related: ["greenhouse gases", "carbon footprint", "sea level rise", "extreme weather", "paris agreement"],
+    citations: [
+      { author: "IPCC", title: "Climate Change 2021: The Physical Science Basis", year: "2021" }
+    ],
+    dateAdded: "2025-04-06"
+  },
+  
+  // New historical figure entries
+  {
+    id: "ada-lovelace",
+    name: "Ada Lovelace",
+    era: "1815-1852",
+    field: "Mathematics & Computing",
+    contribution: "Wrote the first algorithm intended for implementation on Charles Babbage's Analytical Engine; recognized as the first computer programmer; understood the potential of computing beyond mere calculations.",
+    quote: "The Analytical Engine weaves algebraic patterns, just as the Jacquard loom weaves flowers and leaves.",
+    keywords: ["computing", "algorithm", "analytical engine", "programming", "mathematics"]
+  } as HistoricalFigure,
+  {
+    id: "marie-curie",
+    name: "Marie Curie",
+    era: "1867-1934",
+    field: "Physics & Chemistry",
+    contribution: "Pioneered research on radioactivity; discovered the elements polonium and radium; first woman to win a Nobel Prize and only person to win Nobel Prizes in multiple scientific fields.",
+    quote: "Nothing in life is to be feared, it is only to be understood. Now is the time to understand more, so that we may fear less.",
+    keywords: ["radioactivity", "physics", "chemistry", "polonium", "radium", "nobel prize"]
+  } as HistoricalFigure,
+  {
+    id: "alan-turing",
+    name: "Alan Turing",
+    era: "1912-1954",
+    field: "Computer Science & Mathematics",
+    contribution: "Father of theoretical computer science and artificial intelligence; developed the concept of the Turing machine; helped break the Enigma code during World War II.",
+    quote: "We can only see a short distance ahead, but we can see plenty there that needs to be done.",
+    keywords: ["computing", "artificial intelligence", "cryptography", "turing machine", "algorithm"]
+  } as HistoricalFigure
 ];
 
 export function searchKnowledgeBase(query: string, topResults: number = 3, category?: string): KnowledgeEntry[] {
@@ -596,7 +703,11 @@ export function getCategoryInfo(category: string): { description: string, entrie
     "history": "The study of past events and human affairs",
     "dictionary": "Definitions and explanations of words and concepts",
     "thesaurus": "Collections of words and their synonyms and related concepts",
-    "astronomy": "The study of celestial objects and phenomena beyond Earth's atmosphere"
+    "astronomy": "The study of celestial objects and phenomena beyond Earth's atmosphere",
+    "art": "The visual and performing arts",
+    "literature": "Written works of fiction, poetry, and drama",
+    "economics": "The study of the production, distribution, and consumption of goods and services",
+    "environmental science": "The study of the natural environment and its interactions with human activities"
   };
   
   // Count entries by category
@@ -629,6 +740,10 @@ export function getAllCategories(): { id: string, name: string, count: number }[
     "dictionary": "Dictionary",
     "thesaurus": "Thesaurus",
     "astronomy": "Astronomy",
+    "art": "Art",
+    "literature": "Literature",
+    "economics": "Economics",
+    "environmental science": "Environmental Science",
     "neuroscience": "Neuroscience",
     "computer science": "Computer Science",
     "medicine": "Medicine",
@@ -686,4 +801,133 @@ export function getCitationsForTopic(topic: string): Citation[] {
   }
   
   return [];
+}
+
+export function searchHistoricalFigures(query: string, count: number = 3): HistoricalFigure[] {
+  const lowerQuery = query.toLowerCase();
+  const queryWords = lowerQuery.split(/\s+/).filter(word => word.length > 2);
+  
+  if (queryWords.length === 0) return [];
+  
+  // Calculate relevance score for each historical figure
+  const scoredFigures = COMPREHENSIVE_KNOWLEDGE_BASE
+    .filter((entry): entry is HistoricalFigure => 'name' in entry)
+    .map(figure => {
+      let score = 0;
+      
+      // Check name match
+      if (figure.name.toLowerCase().includes(lowerQuery)) {
+        score += 100;
+      }
+      
+      // Check field match
+      if (figure.field.toLowerCase().includes(lowerQuery)) {
+        score += 50;
+      }
+      
+      // Check era match
+      if (figure.era.toLowerCase().includes(lowerQuery)) {
+        score += 30;
+      }
+      
+      // Check contribution match
+      if (figure.contribution.toLowerCase().includes(lowerQuery)) {
+        score += 20;
+      }
+      
+      // Check keyword matches
+      queryWords.forEach(word => {
+        if (figure.keywords.some(keyword => keyword.toLowerCase().includes(word))) {
+          score += 40;
+        }
+      });
+      
+      return { figure, score };
+    });
+  
+  // Sort by score and return top results
+  return scoredFigures
+    .sort((a, b) => b.score - a.score)
+    .filter(item => item.score > 0)
+    .slice(0, count)
+    .map(item => item.figure);
+}
+
+export function getRelatedTopics(topic: string, count: number = 5): {category: string, topics: string[]}[] {
+  const relatedCategories: Record<string, string[]> = {};
+  
+  // Find entries related to the topic
+  const relatedEntries = COMPREHENSIVE_KNOWLEDGE_BASE
+    .filter((entry): entry is KnowledgeEntry => 
+      'key' in entry && 
+      (entry.key.some(k => k.toLowerCase().includes(topic.toLowerCase())) || 
+       entry.value.toLowerCase().includes(topic.toLowerCase()))
+    );
+  
+  // Collect related topics by category
+  relatedEntries.forEach(entry => {
+    if (entry.related && entry.related.length > 0) {
+      if (!relatedCategories[entry.category]) {
+        relatedCategories[entry.category] = [];
+      }
+      
+      entry.related.forEach(related => {
+        if (!relatedCategories[entry.category].includes(related)) {
+          relatedCategories[entry.category].push(related);
+        }
+      });
+    }
+  });
+  
+  // Format the results
+  return Object.keys(relatedCategories)
+    .map(category => ({
+      category,
+      topics: relatedCategories[category].slice(0, count)
+    }))
+    .sort((a, b) => b.topics.length - a.topics.length);
+}
+
+export function getKnowledgeStatistics(): {
+  totalEntries: number;
+  entriesByCategory: Record<string, number>;
+  recentlyAdded: number;
+  averageImportance: number;
+  topCategories: string[];
+} {
+  const knowledgeEntries = COMPREHENSIVE_KNOWLEDGE_BASE.filter((entry): entry is KnowledgeEntry => 'key' in entry);
+  const historicalFigures = COMPREHENSIVE_KNOWLEDGE_BASE.filter((entry): entry is HistoricalFigure => 'name' in entry);
+  
+  const entriesByCategory: Record<string, number> = {};
+  let totalImportance = 0;
+  
+  knowledgeEntries.forEach(entry => {
+    if (!entriesByCategory[entry.category]) {
+      entriesByCategory[entry.category] = 0;
+    }
+    entriesByCategory[entry.category]++;
+    totalImportance += entry.importance;
+  });
+  
+  // Count entries added in the last 30 days
+  const thirtyDaysAgo = new Date();
+  thirtyDaysAgo.setDate(thirtyDaysAgo.getDate() - 30);
+  
+  const recentlyAdded = knowledgeEntries.filter(entry => {
+    if (!entry.dateAdded) return false;
+    return new Date(entry.dateAdded) >= thirtyDaysAgo;
+  }).length;
+  
+  // Get top categories by number of entries
+  const topCategories = Object.keys(entriesByCategory)
+    .sort((a, b) => entriesByCategory[b] - entriesByCategory[a])
+    .slice(0, 5);
+  
+  return {
+    totalEntries: knowledgeEntries.length + historicalFigures.length,
+    entriesByCategory,
+    recentlyAdded,
+    averageImportance: totalImportance / knowledgeEntries.length,
+    topCategories
+  };
 }

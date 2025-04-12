@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react';
-import { Search, Book, Brain, Sparkles, Info, Filter, Lightbulb, X, Calculator, BookText, Sigma, Clock, BookmarkPlus, Bookmark, BookOpen } from 'lucide-react';
+import { Search, Book, Brain, Sparkles, Info, Filter, Lightbulb, X, Calculator, BookText, 
+         Sigma, Clock, BookmarkPlus, Bookmark, BookOpen, History, BarChart, TrendingUp } from 'lucide-react';
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
@@ -15,11 +16,17 @@ import {
   getLatestEntries,
   getBookmarkableEntries,
   getCitationsForTopic,
+  searchHistoricalFigures,
+  getRelatedTopics,
   KnowledgeEntry,
-  Citation
+  Citation,
+  HistoricalFigure
 } from '@/services/knowledgeBaseService';
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@/components/ui/tooltip";
 import { useToast } from "@/hooks/use-toast";
+import KnowledgeTrends from './KnowledgeTrends';
+import SearchHistory from './SearchHistory';
+import CitationManager from './CitationManager';
 
 interface KnowledgeQueryProps {
   onQueryResult?: (result: string) => void;
@@ -43,7 +50,17 @@ const KnowledgeQuery: React.FC<KnowledgeQueryProps> = ({ onQueryResult }) => {
   const [viewMode, setViewMode] = useState<'standard' | 'citations' | 'bookmarks'>('standard');
   const [latestEntries, setLatestEntries] = useState<KnowledgeEntry[]>([]);
   const [citations, setCitations] = useState<Citation[]>([]);
-  
+  const [searchHistory, setSearchHistory] = useState<{
+    query: string;
+    timestamp: Date;
+    category?: string;
+  }[]>([]);
+  const [showTrends, setShowTrends] = useState(false);
+  const [showHistory, setShowHistory] = useState(false);
+  const [advancedSearchMode, setAdvancedSearchMode] = useState(false);
+  const [searchIncludeHistoricalFigures, setSearchIncludeHistoricalFigures] = useState(true);
+  const [historicalFigures, setHistoricalFigures] = useState<HistoricalFigure[]>([]);
+
   const { toast } = useToast();
 
   useEffect(() => {
@@ -68,6 +85,14 @@ const KnowledgeQuery: React.FC<KnowledgeQueryProps> = ({ onQueryResult }) => {
     setResult(null);
     setShowSuggestions(false);
 
+    const historyEntry = {
+      query: query,
+      timestamp: new Date(),
+      category: selectedCategory !== "all" ? selectedCategory : undefined
+    };
+    
+    setSearchHistory([...searchHistory, historyEntry]);
+    
     if (!recentQueries.includes(query) && recentQueries.length < 5) {
       setRecentQueries([...recentQueries, query]);
     } else if (!recentQueries.includes(query)) {
@@ -89,6 +114,10 @@ const KnowledgeQuery: React.FC<KnowledgeQueryProps> = ({ onQueryResult }) => {
           selectedCategory !== "all" ? selectedCategory : undefined
         )
       );
+      
+      if (searchIncludeHistoricalFigures) {
+        setHistoricalFigures(searchHistoricalFigures(query));
+      }
       
       setSearching(false);
     }, 800);
@@ -341,11 +370,130 @@ const KnowledgeQuery: React.FC<KnowledgeQueryProps> = ({ onQueryResult }) => {
     );
   };
 
+  const renderHistoricalFigures = () => {
+    if (historicalFigures.length === 0) return null;
+    
+    return (
+      <div className="mt-3">
+        <h4 className="text-xs font-medium flex items-center mb-1">
+          <History className="h-3 w-3 mr-1 text-amber-400" />
+          Historical Figures Related to "{query}"
+        </h4>
+        
+        <div className="grid grid-cols-1 gap-2">
+          {historicalFigures.map((figure, idx) => (
+            <div 
+              key={idx}
+              className="text-xs p-2 rounded bg-black/10"
+            >
+              <div className="font-medium">{figure.name} - {figure.era}</div>
+              <div className="text-muted-foreground">{figure.field}</div>
+              <div className="mt-1 italic text-[10px]">"{figure.quote}"</div>
+            </div>
+          ))}
+        </div>
+      </div>
+    );
+  };
+
+  const renderAdvancedSearch = () => {
+    if (!advancedSearchMode) return null;
+    
+    return (
+      <div className="mb-2 p-2 bg-black/10 rounded text-xs">
+        <div className="flex items-center justify-between mb-2">
+          <span className="font-medium">Advanced Search Options</span>
+          <Button
+            size="sm"
+            variant="ghost"
+            onClick={toggleAdvancedSearch}
+            className="h-5 w-5 p-0"
+          >
+            <X className="h-3 w-3" />
+          </Button>
+        </div>
+        
+        <div className="flex items-center mb-2">
+          <input 
+            type="checkbox" 
+            id="searchHistorical" 
+            checked={searchIncludeHistoricalFigures} 
+            onChange={() => setSearchIncludeHistoricalFigures(!searchIncludeHistoricalFigures)} 
+            className="mr-2"
+          />
+          <label htmlFor="searchHistorical" className="cursor-pointer">Include historical figures</label>
+        </div>
+        
+        <div className="flex flex-wrap gap-1">
+          <Badge 
+            variant={selectedCategory === "all" ? "default" : "outline"} 
+            className="text-[10px] cursor-pointer"
+            onClick={() => setSelectedCategory("all")}
+          >
+            All Categories
+          </Badge>
+          {allCategories.slice(0, 5).map(category => (
+            <Badge 
+              key={category.id}
+              variant={selectedCategory === category.id ? "default" : "outline"} 
+              className="text-[10px] cursor-pointer capitalize"
+              onClick={() => setSelectedCategory(category.id)}
+            >
+              {category.name}
+            </Badge>
+          ))}
+        </div>
+      </div>
+    );
+  };
+
+  const handleHistoryClear = () => {
+    setSearchHistory([]);
+    toast({
+      title: "History cleared",
+      description: "Your search history has been cleared.",
+    });
+  };
+  
+  const handleHistoryItemClear = (index: number) => {
+    const newHistory = [...searchHistory];
+    newHistory.splice(index, 1);
+    setSearchHistory(newHistory);
+  };
+  
+  const handleHistoryItemSelect = (selectedQuery: string) => {
+    setQuery(selectedQuery);
+    handleQuerySubmit();
+  };
+
   return (
     <div className="w-full max-w-md mt-4 p-4 rounded-lg bg-muted/20 backdrop-blur-sm">
-      <div className="flex items-center mb-3">
-        <Book className="h-5 w-5 mr-2 text-muted-foreground" />
-        <h3 className="text-sm font-medium">Advanced Knowledge Repository</h3>
+      <div className="flex items-center justify-between mb-3">
+        <div className="flex items-center">
+          <Book className="h-5 w-5 mr-2 text-muted-foreground" />
+          <h3 className="text-sm font-medium">Advanced Knowledge Repository</h3>
+        </div>
+        
+        <div className="flex gap-1">
+          <Button
+            variant="ghost"
+            size="sm"
+            className="h-7 w-7 p-0"
+            onClick={() => setShowHistory(!showHistory)}
+            title="Search History"
+          >
+            <Clock className="h-4 w-4 text-muted-foreground" />
+          </Button>
+          <Button
+            variant="ghost"
+            size="sm"
+            className="h-7 w-7 p-0"
+            onClick={() => setShowTrends(!showTrends)}
+            title="Knowledge Trends"
+          >
+            <TrendingUp className="h-4 w-4 text-muted-foreground" />
+          </Button>
+        </div>
       </div>
       
       <div className="flex gap-2 mb-2">
@@ -423,7 +571,18 @@ const KnowledgeQuery: React.FC<KnowledgeQueryProps> = ({ onQueryResult }) => {
           <Search className="h-4 w-4 mr-1" />
           Query
         </Button>
+        <Button
+          size="sm"
+          variant="ghost"
+          onClick={toggleAdvancedSearch}
+          className="p-0 w-7 h-auto text-muted-foreground hover:bg-black/20"
+          title="Advanced Search Options"
+        >
+          <Filter className="h-4 w-4" />
+        </Button>
       </div>
+      
+      {renderAdvancedSearch()}
       
       {filters.length > 0 && (
         <div className="flex flex-wrap gap-1 mb-2">
@@ -604,6 +763,25 @@ const KnowledgeQuery: React.FC<KnowledgeQueryProps> = ({ onQueryResult }) => {
             </div>
           </div>
         </>
+      )}
+      
+      {historicalFigures.length > 0 && renderHistoricalFigures()}
+      
+      {showTrends && (
+        <div className="mt-4">
+          <KnowledgeTrends selectedTopic={query || undefined} />
+        </div>
+      )}
+      
+      {showHistory && (
+        <div className="mt-4">
+          <SearchHistory 
+            history={searchHistory}
+            onSelectQuery={handleHistoryItemSelect}
+            onClearHistory={handleHistoryClear}
+            onClearItem={handleHistoryItemClear}
+          />
+        </div>
       )}
     </div>
   );
