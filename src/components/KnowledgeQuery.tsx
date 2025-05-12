@@ -399,6 +399,57 @@ const KnowledgeQuery: React.FC<KnowledgeQueryProps> = ({ onQueryResult }) => {
   const toggleAdvancedSearch = () => {
     setAdvancedSearchMode(!advancedSearchMode);
   };
+  
+  const renderAdvancedSearch = () => {
+    if (!advancedSearchMode) return null;
+    
+    return (
+      <div className="mb-2 p-2 bg-black/10 rounded text-xs">
+        <div className="flex items-center justify-between mb-2">
+          <span className="font-medium">Advanced Search Options</span>
+          <Button
+            size="sm"
+            variant="ghost"
+            onClick={toggleAdvancedSearch}
+            className="h-5 w-5 p-0"
+          >
+            <X className="h-3 w-3" />
+          </Button>
+        </div>
+        
+        <div className="flex items-center mb-2">
+          <input 
+            type="checkbox" 
+            id="searchHistorical" 
+            checked={searchIncludeHistoricalFigures} 
+            onChange={() => setSearchIncludeHistoricalFigures(!searchIncludeHistoricalFigures)} 
+            className="mr-2"
+          />
+          <label htmlFor="searchHistorical" className="cursor-pointer">Include historical figures</label>
+        </div>
+        
+        <div className="flex flex-wrap gap-1">
+          <Badge 
+            variant={selectedCategory === "all" ? "default" : "outline"} 
+            className="text-[10px] cursor-pointer"
+            onClick={() => setSelectedCategory("all")}
+          >
+            All Categories
+          </Badge>
+          {allCategories.slice(0, 5).map(category => (
+            <Badge 
+              key={category.id}
+              variant={selectedCategory === category.id ? "default" : "outline"} 
+              className="text-[10px] cursor-pointer capitalize"
+              onClick={() => setSelectedCategory(category.id)}
+            >
+              {category.name}
+            </Badge>
+          ))}
+        </div>
+      </div>
+    );
+  };
 
   const handleHistoryClear = () => {
     setSearchHistory([]);
