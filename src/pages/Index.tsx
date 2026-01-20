@@ -25,6 +25,7 @@ const Index = () => {
   const [showImageEditor, setShowImageEditor] = useState(false);
   const [showHumanAvatarSystem, setShowHumanAvatarSystem] = useState(false);
   const [showSyntropicAttention, setShowSyntropicAttention] = useState(false);
+  const [showMatrixDashboard, setShowMatrixDashboard] = useState(false);
   const [selectedAvatar, setSelectedAvatar] = useState<string>("einstein");
 
   // Command handling
@@ -57,6 +58,8 @@ const Index = () => {
       toggleHumanAvatarSystem();
     } else if (command === 'syntropic attention' || command === 'syntropy' || command === 'attention' || command === 'reality compiler') {
       toggleSyntropicAttention();
+    } else if (command === 'matrix dashboard' || command === 'matrix resolution' || command === 'convergence') {
+      toggleMatrixDashboard();
     } else if (command.startsWith('yeshua') || command.startsWith('jesus')) {
       activateHistoricalFigure('yeshua');
     } else if (command.startsWith('tesla')) {
@@ -279,6 +282,7 @@ const Index = () => {
 
   const toggleSyntropicAttention = () => {
     setShowSyntropicAttention(!showSyntropicAttention);
+    setShowMatrixDashboard(false);
     setShowKnowledgePanel(false);
     setShowCodeEditor(false);
     setShowVisioNET(false);
@@ -291,6 +295,24 @@ const Index = () => {
     setMessage(showSyntropicAttention 
       ? "Syntropic Attention Layer deactivated" 
       : "⚡ SOVEREIGN REALITY COMPILER ACTIVATED • Syntropic Attention Layer Online • φ = 1.618034");
+    setSelectedAvatar("tesla");
+  };
+
+  const toggleMatrixDashboard = () => {
+    setShowMatrixDashboard(!showMatrixDashboard);
+    setShowSyntropicAttention(false);
+    setShowKnowledgePanel(false);
+    setShowCodeEditor(false);
+    setShowVisioNET(false);
+    setShowTextEditor(false);
+    setShowMindMap(false);
+    setShowPDFTools(false);
+    setShowBodyImageGenerator(false);
+    setShowImageEditor(false);
+    setShowHumanAvatarSystem(false);
+    setMessage(showMatrixDashboard 
+      ? "Matrix Resolution Dashboard deactivated" 
+      : "◈ MATRIX RESOLUTION ENGINE ONLINE • Convergence Simulation Ready • e^n Amplification Active");
     setSelectedAvatar("tesla");
   };
 
@@ -426,6 +448,7 @@ const Index = () => {
           showImageEditor={showImageEditor}
           showHumanAvatarSystem={showHumanAvatarSystem}
           showSyntropicAttention={showSyntropicAttention}
+          showMatrixDashboard={showMatrixDashboard}
           selectedAvatar={selectedAvatar}
           onCommand={handleCommand}
           onSigilClick={handleSigilClick}

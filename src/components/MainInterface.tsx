@@ -13,6 +13,7 @@ import BodyImageGenerator from '@/components/BodyImageGenerator';
 import ImageEditor from '@/components/ImageEditor';
 import HumanAvatarSystem from '@/components/HumanAvatarSystem';
 import SyntropicAttention from '@/components/SyntropicAttention';
+import MatrixResolutionDashboard from '@/components/MatrixResolutionDashboard';
 
 interface MainInterfaceProps {
   active: boolean;
@@ -30,6 +31,7 @@ interface MainInterfaceProps {
   showImageEditor?: boolean;
   showHumanAvatarSystem?: boolean;
   showSyntropicAttention?: boolean;
+  showMatrixDashboard?: boolean;
   selectedAvatar: string;
   onCommand: (command: string) => void;
   onSigilClick: () => void;
@@ -43,6 +45,7 @@ interface MainInterfaceProps {
   onImageEditResult?: (imageUrl: string) => void;
   onHumanAvatarResult?: (data: any) => void;
   onSyntropicResult?: (data: any) => void;
+  onMatrixResult?: (data: any) => void;
   toggleKnowledgePanel: () => void;
   toggleCodeEditor: () => void;
   toggleVisioNET: () => void;
@@ -64,6 +67,7 @@ const MainInterface: React.FC<MainInterfaceProps> = ({
   showImageEditor,
   showHumanAvatarSystem,
   showSyntropicAttention,
+  showMatrixDashboard,
   selectedAvatar,
   onCommand,
   onSigilClick,
@@ -77,6 +81,7 @@ const MainInterface: React.FC<MainInterfaceProps> = ({
   onImageEditResult,
   onHumanAvatarResult,
   onSyntropicResult,
+  onMatrixResult,
   toggleKnowledgePanel,
   toggleCodeEditor,
   toggleVisioNET
@@ -149,6 +154,10 @@ const MainInterface: React.FC<MainInterfaceProps> = ({
       {showSyntropicAttention && onSyntropicResult && (
         <SyntropicAttention onComplete={onSyntropicResult} />
       )}
+
+      {showMatrixDashboard && (
+        <MatrixResolutionDashboard />
+      )}
       
       <CommandInput onCommand={onCommand} />
       
@@ -157,7 +166,7 @@ const MainInterface: React.FC<MainInterfaceProps> = ({
         <span className="text-crimson">"text editor"</span>, <span className="text-crimson">"mind map"</span>, 
         <span className="text-crimson">"pdf tools"</span>, <span className="text-crimson">"body generator"</span>,
         <span className="text-crimson">"image editor"</span>, <span className="text-crimson">"human avatar"</span>,
-        or <span className="text-crimson">"syntropic attention"</span>
+        <span className="text-crimson">"syntropic attention"</span>, or <span className="text-crimson">"matrix dashboard"</span>
       </div>
     </div>
   );
