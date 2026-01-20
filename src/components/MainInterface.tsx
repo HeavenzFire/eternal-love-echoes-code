@@ -1,4 +1,3 @@
-
 import React from 'react';
 import CentralSigil from '@/components/CentralSigil';
 import CommandInput from '@/components/CommandInput';
@@ -13,6 +12,7 @@ import PDFTools from '@/components/PDFTools';
 import BodyImageGenerator from '@/components/BodyImageGenerator';
 import ImageEditor from '@/components/ImageEditor';
 import HumanAvatarSystem from '@/components/HumanAvatarSystem';
+import SyntropicAttention from '@/components/SyntropicAttention';
 
 interface MainInterfaceProps {
   active: boolean;
@@ -29,6 +29,7 @@ interface MainInterfaceProps {
   showBodyImageGenerator?: boolean;
   showImageEditor?: boolean;
   showHumanAvatarSystem?: boolean;
+  showSyntropicAttention?: boolean;
   selectedAvatar: string;
   onCommand: (command: string) => void;
   onSigilClick: () => void;
@@ -41,6 +42,7 @@ interface MainInterfaceProps {
   onBodyImageResult?: (imageUrl: string) => void;
   onImageEditResult?: (imageUrl: string) => void;
   onHumanAvatarResult?: (data: any) => void;
+  onSyntropicResult?: (data: any) => void;
   toggleKnowledgePanel: () => void;
   toggleCodeEditor: () => void;
   toggleVisioNET: () => void;
@@ -61,6 +63,7 @@ const MainInterface: React.FC<MainInterfaceProps> = ({
   showBodyImageGenerator,
   showImageEditor,
   showHumanAvatarSystem,
+  showSyntropicAttention,
   selectedAvatar,
   onCommand,
   onSigilClick,
@@ -73,6 +76,7 @@ const MainInterface: React.FC<MainInterfaceProps> = ({
   onBodyImageResult,
   onImageEditResult,
   onHumanAvatarResult,
+  onSyntropicResult,
   toggleKnowledgePanel,
   toggleCodeEditor,
   toggleVisioNET
@@ -85,7 +89,7 @@ const MainInterface: React.FC<MainInterfaceProps> = ({
       {/* Dynamic Avatar Display */}
       {(showKnowledgePanel || showCodeEditor || showVisioNET || 
         showTextEditor || showMindMap || showPDFTools || showBodyImageGenerator || 
-        showImageEditor || showHumanAvatarSystem) && (
+        showImageEditor || showHumanAvatarSystem || showSyntropicAttention) && (
         <AvatarSelector 
           selectedAvatar={selectedAvatar}
           onKnowledgePanelToggle={toggleKnowledgePanel}
@@ -141,6 +145,10 @@ const MainInterface: React.FC<MainInterfaceProps> = ({
       {showHumanAvatarSystem && onHumanAvatarResult && (
         <HumanAvatarSystem onComplete={onHumanAvatarResult} />
       )}
+
+      {showSyntropicAttention && onSyntropicResult && (
+        <SyntropicAttention onComplete={onSyntropicResult} />
+      )}
       
       <CommandInput onCommand={onCommand} />
       
@@ -148,7 +156,8 @@ const MainInterface: React.FC<MainInterfaceProps> = ({
         Try commands: <span className="text-crimson">"I love you"</span>, <span className="text-crimson">"generate image"</span>,
         <span className="text-crimson">"text editor"</span>, <span className="text-crimson">"mind map"</span>, 
         <span className="text-crimson">"pdf tools"</span>, <span className="text-crimson">"body generator"</span>,
-        <span className="text-crimson">"image editor"</span>, or <span className="text-crimson">"human avatar"</span>
+        <span className="text-crimson">"image editor"</span>, <span className="text-crimson">"human avatar"</span>,
+        or <span className="text-crimson">"syntropic attention"</span>
       </div>
     </div>
   );
