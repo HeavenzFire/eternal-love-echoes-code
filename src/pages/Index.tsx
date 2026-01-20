@@ -24,6 +24,7 @@ const Index = () => {
   const [showBodyImageGenerator, setShowBodyImageGenerator] = useState(false);
   const [showImageEditor, setShowImageEditor] = useState(false);
   const [showHumanAvatarSystem, setShowHumanAvatarSystem] = useState(false);
+  const [showSyntropicAttention, setShowSyntropicAttention] = useState(false);
   const [selectedAvatar, setSelectedAvatar] = useState<string>("einstein");
 
   // Command handling
@@ -54,6 +55,8 @@ const Index = () => {
       toggleImageEditor();
     } else if (command === 'human avatar' || command === '3d body' || command === 'avatar') {
       toggleHumanAvatarSystem();
+    } else if (command === 'syntropic attention' || command === 'syntropy' || command === 'attention' || command === 'reality compiler') {
+      toggleSyntropicAttention();
     } else if (command.startsWith('yeshua') || command.startsWith('jesus')) {
       activateHistoricalFigure('yeshua');
     } else if (command.startsWith('tesla')) {
@@ -270,7 +273,25 @@ const Index = () => {
     setShowBodyImageGenerator(result.showBodyImageGenerator || false);
     setShowImageEditor(result.showImageEditor || false);
     setShowHumanAvatarSystem(result.showHumanAvatarSystem || false);
+    setShowSyntropicAttention(false);
     setSelectedAvatar(result.selectedAvatar || "davinci");
+  };
+
+  const toggleSyntropicAttention = () => {
+    setShowSyntropicAttention(!showSyntropicAttention);
+    setShowKnowledgePanel(false);
+    setShowCodeEditor(false);
+    setShowVisioNET(false);
+    setShowTextEditor(false);
+    setShowMindMap(false);
+    setShowPDFTools(false);
+    setShowBodyImageGenerator(false);
+    setShowImageEditor(false);
+    setShowHumanAvatarSystem(false);
+    setMessage(showSyntropicAttention 
+      ? "Syntropic Attention Layer deactivated" 
+      : "⚡ SOVEREIGN REALITY COMPILER ACTIVATED • Syntropic Attention Layer Online • φ = 1.618034");
+    setSelectedAvatar("tesla");
   };
 
   const activateHistoricalFigure = (id: string) => {
@@ -367,6 +388,21 @@ const Index = () => {
     });
   };
 
+  const handleSyntropicResult = (data: any) => {
+    const typeLabels: Record<string, string> = {
+      'SYNTROPIC_ATTENTION': '⚡ Attention Layer Executed',
+      'REALITY_COMPILATION': '🌌 Reality Compiled',
+      'MATRIX_RESOLUTION': '◈ Matrix Resolved',
+      'FIELD_SCAN': '🔍 Field Integrity Scanned'
+    };
+    const label = typeLabels[data?.type] || 'Syntropic Operation Complete';
+    setMessage(`${label} • Φ = ${data?.syntropicPotential?.toFixed(4) || data?.result?.syntropicOutput?.toFixed(4) || 'N/A'}`);
+    toast({
+      title: "Syntropic Reality Compiler",
+      description: label,
+    });
+  };
+
   return (
     <>
       <CosmicBackground 
@@ -389,6 +425,7 @@ const Index = () => {
           showBodyImageGenerator={showBodyImageGenerator}
           showImageEditor={showImageEditor}
           showHumanAvatarSystem={showHumanAvatarSystem}
+          showSyntropicAttention={showSyntropicAttention}
           selectedAvatar={selectedAvatar}
           onCommand={handleCommand}
           onSigilClick={handleSigilClick}
@@ -401,6 +438,7 @@ const Index = () => {
           onBodyImageResult={handleBodyImageResult}
           onImageEditResult={handleImageEditResult}
           onHumanAvatarResult={handleHumanAvatarResult}
+          onSyntropicResult={handleSyntropicResult}
           toggleKnowledgePanel={toggleKnowledgePanel}
           toggleCodeEditor={toggleCodeEditor}
           toggleVisioNET={toggleVisioNET}
