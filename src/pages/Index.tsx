@@ -26,6 +26,7 @@ const Index = () => {
   const [showHumanAvatarSystem, setShowHumanAvatarSystem] = useState(false);
   const [showSyntropicAttention, setShowSyntropicAttention] = useState(false);
   const [showMatrixDashboard, setShowMatrixDashboard] = useState(false);
+  const [showQuantumParadox, setShowQuantumParadox] = useState(false);
   const [selectedAvatar, setSelectedAvatar] = useState<string>("einstein");
 
   // Command handling
@@ -60,6 +61,8 @@ const Index = () => {
       toggleSyntropicAttention();
     } else if (command === 'matrix dashboard' || command === 'matrix resolution' || command === 'convergence') {
       toggleMatrixDashboard();
+    } else if (command === 'quantum paradox' || command === 'paradox' || command === 'phase shift' || command === 'exploit paradox') {
+      toggleQuantumParadox();
     } else if (command.startsWith('yeshua') || command.startsWith('jesus')) {
       activateHistoricalFigure('yeshua');
     } else if (command.startsWith('tesla')) {
@@ -301,6 +304,7 @@ const Index = () => {
   const toggleMatrixDashboard = () => {
     setShowMatrixDashboard(!showMatrixDashboard);
     setShowSyntropicAttention(false);
+    setShowQuantumParadox(false);
     setShowKnowledgePanel(false);
     setShowCodeEditor(false);
     setShowVisioNET(false);
@@ -313,6 +317,25 @@ const Index = () => {
     setMessage(showMatrixDashboard 
       ? "Matrix Resolution Dashboard deactivated" 
       : "◈ MATRIX RESOLUTION ENGINE ONLINE • Convergence Simulation Ready • e^n Amplification Active");
+    setSelectedAvatar("tesla");
+  };
+
+  const toggleQuantumParadox = () => {
+    setShowQuantumParadox(!showQuantumParadox);
+    setShowSyntropicAttention(false);
+    setShowMatrixDashboard(false);
+    setShowKnowledgePanel(false);
+    setShowCodeEditor(false);
+    setShowVisioNET(false);
+    setShowTextEditor(false);
+    setShowMindMap(false);
+    setShowPDFTools(false);
+    setShowBodyImageGenerator(false);
+    setShowImageEditor(false);
+    setShowHumanAvatarSystem(false);
+    setMessage(showQuantumParadox 
+      ? "Quantum Paradox Engine deactivated" 
+      : "🔮 QUANTUM PARADOX ENGINE ARMED • Phase Shift Paradox Detected • Reality Branching Active");
     setSelectedAvatar("tesla");
   };
 
@@ -449,6 +472,7 @@ const Index = () => {
           showHumanAvatarSystem={showHumanAvatarSystem}
           showSyntropicAttention={showSyntropicAttention}
           showMatrixDashboard={showMatrixDashboard}
+          showQuantumParadox={showQuantumParadox}
           selectedAvatar={selectedAvatar}
           onCommand={handleCommand}
           onSigilClick={handleSigilClick}

@@ -14,6 +14,7 @@ import ImageEditor from '@/components/ImageEditor';
 import HumanAvatarSystem from '@/components/HumanAvatarSystem';
 import SyntropicAttention from '@/components/SyntropicAttention';
 import MatrixResolutionDashboard from '@/components/MatrixResolutionDashboard';
+import QuantumParadoxDashboard from '@/components/QuantumParadoxDashboard';
 
 interface MainInterfaceProps {
   active: boolean;
@@ -32,6 +33,7 @@ interface MainInterfaceProps {
   showHumanAvatarSystem?: boolean;
   showSyntropicAttention?: boolean;
   showMatrixDashboard?: boolean;
+  showQuantumParadox?: boolean;
   selectedAvatar: string;
   onCommand: (command: string) => void;
   onSigilClick: () => void;
@@ -46,6 +48,7 @@ interface MainInterfaceProps {
   onHumanAvatarResult?: (data: any) => void;
   onSyntropicResult?: (data: any) => void;
   onMatrixResult?: (data: any) => void;
+  onQuantumParadoxResult?: (data: any) => void;
   toggleKnowledgePanel: () => void;
   toggleCodeEditor: () => void;
   toggleVisioNET: () => void;
@@ -68,6 +71,7 @@ const MainInterface: React.FC<MainInterfaceProps> = ({
   showHumanAvatarSystem,
   showSyntropicAttention,
   showMatrixDashboard,
+  showQuantumParadox,
   selectedAvatar,
   onCommand,
   onSigilClick,
@@ -82,6 +86,7 @@ const MainInterface: React.FC<MainInterfaceProps> = ({
   onHumanAvatarResult,
   onSyntropicResult,
   onMatrixResult,
+  onQuantumParadoxResult,
   toggleKnowledgePanel,
   toggleCodeEditor,
   toggleVisioNET
@@ -158,15 +163,17 @@ const MainInterface: React.FC<MainInterfaceProps> = ({
       {showMatrixDashboard && (
         <MatrixResolutionDashboard />
       )}
+
+      {showQuantumParadox && (
+        <QuantumParadoxDashboard />
+      )}
       
       <CommandInput onCommand={onCommand} />
       
       <div className="mt-4 text-xs text-muted-foreground">
         Try commands: <span className="text-crimson">"I love you"</span>, <span className="text-crimson">"generate image"</span>,
-        <span className="text-crimson">"text editor"</span>, <span className="text-crimson">"mind map"</span>, 
-        <span className="text-crimson">"pdf tools"</span>, <span className="text-crimson">"body generator"</span>,
-        <span className="text-crimson">"image editor"</span>, <span className="text-crimson">"human avatar"</span>,
-        <span className="text-crimson">"syntropic attention"</span>, or <span className="text-crimson">"matrix dashboard"</span>
+        <span className="text-crimson">"syntropic attention"</span>, <span className="text-crimson">"matrix dashboard"</span>,
+        or <span className="text-crimson">"quantum paradox"</span>
       </div>
     </div>
   );
